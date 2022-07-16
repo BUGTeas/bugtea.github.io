@@ -1,0 +1,532 @@
+<!doctype html>
+<html>
+    <head>
+        <title>虚拟可达鸭</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+		<meta charset="utf-8">
+        <style>
+            html,body{
+                margin:0px;
+                height:100%;
+                width:100%;
+                overflow:hidden;
+                background:blue;
+                position:relative;
+            }
+            #loading{
+                position:absolute;
+                z-index:5;
+                width:100%;
+                height:100%;
+                background:#000;
+                top:0px;
+                left:0px;
+            }
+            #opt_site{
+                margin:-5px 0 20px calc(50% - 50px);
+                border-radius:3px;
+                width:0px;
+                height:3px;
+                background:#ff2222;
+            }
+            .optionmode{
+                margin:10px
+            }
+            .statusopt{
+                width:50%;
+                border:0;
+                background:rgba(0,0,0,0);
+                color:#fff;
+                font-size:12px;
+                padding:20px;
+            }
+            #main{
+                /*background:#114514;*/
+                position:absolute;
+                left:0;
+                right:0;
+                margin:auto;
+            }
+            .wrap{
+                width:10%;
+                height:10%;
+                margin: 0px;
+                /*background:rgba(0,0,0,0.05);*/
+                position: absolute;
+                /*让wrap盒子变成一个3d空间 transform-style: preserve 子*/
+                /*给所有的子dif APP内打开 高200像素让它 们都绝对:并且在父元素中居中显示*/
+                transform-style: preserve-3d;
+            }
+            #Right,#Left {
+                width:300%;
+                height:300%;
+                position:absolute;
+                top:-200%;
+                /*background:rgba(255,0,0,0.1);*/
+                transform-style: preserve-3d;
+                /*display:none;*/
+            }
+            #Left{right:275%}
+            #Right{left:275%}
+            @keyframes UPhandL{
+                0%{
+                    transform:rotateY(0deg) rotateZ(10deg) rotateX(-180deg) translateZ(0px) ;
+                }
+                100%{
+                    transform:rotateY(0deg) rotateZ(10deg) rotateX(0deg) translateZ(0px) ;
+                }
+            }
+            @keyframes DNhandL{
+                0%{
+                    transform:rotateY(0deg) rotateZ(10deg) rotateX(0deg) translateZ(0px) ;
+                }
+                100%{
+                    transform:rotateY(0deg) rotateZ(10deg) rotateX(-180deg) translateZ(0px) ;
+                }
+            }
+            @keyframes UPhandR{
+                0%{
+                    transform:rotateY(0deg) rotateZ(-10deg) rotateX(-180deg) translateZ(0px) ;
+                }
+                100%{
+                    transform:rotateY(0deg) rotateZ(-10deg) rotateX(0deg) translateZ(0px) ;
+                }
+            }
+            @keyframes DNhandR{
+                0%{
+                    transform:rotateY(0deg) rotateZ(-10deg) rotateX(0deg) translateZ(0px) ;
+                }
+                100%{
+                    transform:rotateY(0deg) rotateZ(-10deg) rotateX(-180deg) translateZ(0px) ;
+                }
+            }
+            @keyframes play2r{
+                0%{
+                    left:40%;
+                    transform:perspective(400px) rotateX(0) rotateY(30deg) rotateZ(0);
+                    bottom:48%;
+                }
+                12.5%{
+                    left:40%;
+                    transform:perspective(400px) rotateX(0) rotateY(30deg) rotateZ(0);
+                    bottom:46%;
+                }
+                25%{
+                    bottom:48%;
+                }
+                37.5%{
+                    bottom:46%;
+                }
+                50%{
+                    bottom:48%;
+                }
+                62.5%{
+                    bottom:46%;
+                }
+                75%{
+                    bottom:48%;
+                }
+                87.5%{
+                    left:40%;
+                    transform:perspective(400px) rotateX(0) rotateY(-30deg) rotateZ(0);
+                    bottom:46%;
+                }
+                100%{
+                    left:40%;
+                    transform:perspective(400px) rotateX(0) rotateY(-30deg) rotateZ(0);
+                    bottom:48%;
+                }
+            }
+            @keyframes play2l{
+                0%{
+                    left:40%;
+                    transform:perspective(400px) rotateX(0) rotateY(-30deg) rotateZ(0);
+                    bottom:48%;
+                }
+                12.5%{
+                    left:40%;
+                    transform:perspective(400px) rotateX(0) rotateY(-30deg) rotateZ(0);
+                    bottom:46%;
+                }
+                25%{
+                    bottom:48%;
+                }
+                37.5%{
+                    bottom:46%;
+                }
+                50%{
+                    bottom:48%;
+                }
+                
+                62.5%{
+                    bottom:46%;
+                }
+                75%{
+                    bottom:48%;
+                }
+                87.5%{
+                    left:40%;
+                    transform:perspective(400px) rotateX(0) rotateY(30deg) rotateZ(0);
+                    bottom:46%;
+                }
+                100%{
+                    left:40%;
+                    transform:perspective(400px) rotateX(0) rotateY(30deg) rotateZ(0);
+                    bottom:48%;
+                }
+            }
+            .anything{
+                position:absolute;
+                bottom:75%;
+            }
+            #anyl{
+                transform:rotateZ(-10deg);
+                right:0%
+            }
+            #anyr{
+                transform:rotateZ(10deg);
+                left:0%
+            }
+            .optionTitle{
+                font-size:13px;
+            }
+        </style>
+    </head>
+    <body>
+    <img id="bg" onclick="showOption()"/>
+    <div id="main" onclick="showOption()">
+        <div class="wrap" id="wrapr">
+            <div id="Right">
+                <div class="anything" id="anyr">
+                    <!--<iframe src="//player.bilibili.com/player.html?aid=80433022&bvid=BV1GJ411x7h7&cid=137649199&page=1" framespacing="0" allowfullscreen="true" style="width:200px;height:150px;background:#fff;margin:0"></iframe>-->
+                    <!--<img src="imgz/14a.png" style="width:150px;margin:-10px -70px"/>-->
+                </div>
+            </div>
+        </div>
+        <div id="mainimg"></div>
+        <div class="wrap" id="wrapl">
+            <div id="Left">
+                <div class="anything" id="anyl">
+                    <!--<iframe src="//player.bilibili.com/player.html?aid=49837433&bvid=BV1Sb411G7uZ&cid=87259076&page=1" framespacing="0" allowfullscreen="true" style="width:200px;height:150px;background:#fff;margin:0"></iframe>-->
+                    <!--<img src="imgz/14a.png" style="width:150px;margin:-10px -70px"/>-->
+                </div>
+            </div>
+        </div>
+    </div>
+        <span id="infp" style="position:absolute;left:0;margin:5px"></span>
+        <span id="infs" style="position:absolute;right:0;margin:5px"></span>
+        <div style="position:absolute;z-index:3;width:100%;height:100%;background:rgba(0,0,0,0.7);display:none" id="optionbg">
+            <div style="position:absolute;width:100%;bottom:0px;min-height:10px;background:#fff;border-radius:20px">
+        <div style="width:100%;height:30px"></div>
+                <div style="display:inline-block;text-align:right;width:calc(50% - 20px);font-family:hual;font-size:20px;margin:0 10px 0px 10px" onclick="optionSwitch('left')">左侧</div><div style="display:inline-block;text-align:left;width:calc(50% - 20px);font-family:hual;font-size:20px;margin:10px" onclick="optionSwitch()">右侧</div>
+                <style id="optSiteStyle"></style>
+                <div id="opt_site"></div>
+                <div style="position:relative;z-index:2;width:calc(100% - 120px);left:50px;border:1px solid #ccc;padding:10px" onclick="document.getElementById('optionList').style.display = 'block'">
+                    <span id="optionMode"></span>
+                    <div style="float:right;transform:rotateZ(90deg);">></div>
+                    <div id="optionList" style="position:absolute;top:100%;left:0px;width:100%;background:#fff;box-shadow:0px 0px 5px #ccc">
+                        <div class="optionmode" onclick="defaultmode(this.innerHTML)">默认</div>
+                        <hr style="border:0;background:#eee;height:1px"/>
+                        <div class="optionmode" onclick="imgmode(this.innerHTML)">图片</div>
+                        <hr style="border:0;background:#eee;height:1px"/>
+                        <div class="optionmode" onclick="htmlmode(this.innerHTML)">HTML 代码</div>
+                        <hr style="border:0;background:#eee;height:1px"/>
+                        <div class="optionmode" onclick="nonemode(this.innerHTML)">空空如也</div>
+                    </div>
+                </div>
+                <div id="leftopt" style="margin:30px;width:calc(100% - 60px)">
+                    <div id="anylhtml">
+                        <p style="margin:0 0 10px 0">在文本框内输入代码：</p>
+                        <textarea id="anylHInput" style="border:2px solid #ccc;width:calc(100% - 8px);height:200px" oninput="applyhtml(this.value)"></textarea>
+                    </div>
+                    <div id="anylimg">
+                    </div>
+                    <img id="anyldefault" style="width:100px;margin:0 calc(50% - 50px)" src="./resources/NODUCK"/>
+                </div>
+                <div id="rightopt" style="margin:30px;width:calc(100% - 60px)">
+                    <div id="anyrhtml">
+                        <p style="margin:0 0 10px 0">在文本框内输入代码：</p>
+                        <textarea id="anyrHInput" style="border:2px solid #ccc;width:calc(100% - 8px);height:200px" oninput="applyhtml(this.value)"></textarea>
+                    </div>
+                    <div id="anyrimg">
+                    </div>
+                    <img id="anyrdefault" style="width:100px;margin:0 calc(50% - 50px)" src="./resources/NODUCK"/>
+                </div>
+                <div style="text-align:center;margin:0 0 10px 0"><button style='border:1px solid #ccc;background:#eee;padding:5px;font-size:12px;border-radius:5px;width:200px' onclick='bgopt()'>背景选项</button></div>
+                <button style="width:100px;padding:15px;font-size:15px;border-radius:32px;border:4px solid #000;background:#fff;color:#000;position:absolute;bottom:27px;left:50%;transform:translate3d(-50%,0,0)" onclick="document.getElementById('optionbg').style.display = 'none'">关闭</button>
+                <div style="width:100%;height:30px"></div>
+                <div style="width:100%;height:50px;background:#bb0000;border-top:10px solid #000;"></div>
+                <a href="https://wwz.lanzoum.com/b02vbj56f" style="position:absolute;bottom:5px;width:100%;color:#fff;text-align:center;font-size:10px;display:block" onclick="alert('密码：fga4')">下载 Android 应用</a>
+            </div>
+        </div>
+        <div id="bgopt" style="position:absolute;z-index:3;width:100%;height:100%;top:0;left:0;display:none">
+            <div style="position:absolute;width:100%;bottom:0;background:rgba(0,0,0,0.7);color:#fff">
+                <div id="intobgopt"></div>
+                <hr style="margin:0;border:0;background:#ccc;height:1px">
+                <button class="statusopt" onclick="setStatusOpt('infp','showPageStatus')"><span id="showPageStatus"></span> 显示当前播放帧</button><button class="statusopt" onclick="setStatusOpt('infs','showDisplayStatus')"><span id="showDisplayStatus"></span> 显示页面分辨率</button>
+                <hr style="margin:0;border:0;background:#ccc;height:1px">
+                <button style="padding:20px;font-size:12px;width:100%;background:rgba(0,0,0,0);border:0;color:#fff" onclick="bgopt('none')">返回</button>
+            </div>
+        </div>
+        <div id="loading">
+            <div style="position:absolute;top:calc(50% - 40px);width:100%;text-align:center;color:#888">
+                <div style="font-size:60px">请稍候...</div>
+                <div style="font-style:20px">这将消耗 28.92MB 流量</div>
+            </div>
+        </div>
+        <script type="text/JavaScript">
+            oldSize = document.body.clientWidth - document.body.clientHeight;
+            setSize();
+            function checkSize(){
+                if(document.body.clientWidth - document.body.clientHeight==oldSize){setTimeout("checkSize()",1)}else{setSize()};
+                oldSize = document.body.clientWidth - document.body.clientHeight;
+            }
+            function setSize(){
+                var width=document.body.clientWidth;
+                var height=document.body.clientHeight;
+                document.getElementById("infs").innerText = width+" x "+height;
+                if(width<<height){
+                    document.getElementById("main").style.width = width + "px";
+                    document.getElementById("main").style.height = width + "px";
+                    document.getElementById("main").style.top = "calc(50% - " + width / 2 + "px)";
+                    document.getElementById("bg").style = "height:100%;position:absolute;top:50%;left:50%;transform:translate3d(-50%,-50%,0)"
+                }
+                if(width>=height){
+                    document.getElementById("main").style.width = height + "px";
+                    document.getElementById("main").style.height = height + "px";
+                    document.getElementById("main").style.top = "calc(50% - " + height / 2 + "px)";
+                    document.getElementById("bg").style = "width:100%;position:absolute;top:50%;left:50%;transform:translate3d(-50%,-50%,0)"
+                }
+                setTimeout("checkSize()",1);
+            }
+            //right/left hand option switch
+            function optionSwitch(mode){
+                hideList();
+                if(mode=="left"){
+                    document.getElementById("optSiteStyle").innerHTML = "#opt_site{margin:-5px 0 20px calc(50% - 50px);width:40px;animation:site_left 150ms}@keyframes site_left{100%{margin:-5px 0 20px calc(50% - 50px);width:40px;}50%{margin:-5px 0 20px calc(50% - 50px);width:100px;}0.1%{margin:-5px 0 20px calc(50% + 10px);width:40px;}0%{margin:-5px 0 20px calc(50% - 50px);width:0px}}";
+                    document.getElementById("rightopt").style.display="none";
+                    document.getElementById("leftopt").style.display="inline-block";
+                    site = "anyl";
+                    document.getElementById("optionMode").innerHTML = anylMode;
+                }
+                else{
+                    document.getElementById("optSiteStyle").innerHTML = "#opt_site{margin:-5px 0 20px calc(50% + 10px);width:40px;animation:site_right 150ms}@keyframes site_right{0%{margin:-5px 0 20px calc(50% - 50px);width:0px}0.1%{margin:-5px 0 20px calc(50% - 50px);width:40px;}50%{margin:-5px 0 20px calc(50% - 50px);width:100px;}100%{margin:-5px 0 20px calc(50% + 10px);width:40px;}}";
+                    document.getElementById("rightopt").style.display="inline-block";
+                    document.getElementById("leftopt").style.display="none";
+                    site = "anyr";
+                    document.getElementById("optionMode").innerHTML = anyrMode;
+                }
+            }
+            //set something for right/left hand
+            function defaultmode(mode){
+                setlist(mode);
+                showmode("default","img","html","html");
+                applyset("<img src='./resources/NODUCK' style='width:100px'/>");
+            }
+            function imgmode(mode){
+                setlist(mode);
+                showmode("img","html","default","default");
+                applyimg();
+            }
+            function htmlmode(mode){
+                setlist(mode);
+                showmode("html","img","default","default");
+                if(site=="anyl"){document.getElementById("anylHInput").value = anylhtml;applyhtml(anylhtml)};
+                if(site=="anyr"){document.getElementById("anyrHInput").value = anyrhtml;applyhtml(anyrhtml)};
+                
+            }
+            function nonemode(mode){
+                setlist(mode);
+                showmode("html","img","default","html");
+                applyset("");
+            }
+            function showmode(show,hide1,hide2,hide3){
+                document.getElementById(site+show).style.display = "inline";
+                document.getElementById(site+hide1).style.display = "none";
+                document.getElementById(site+hide2).style.display = "none";
+                document.getElementById(site+hide3).style.display = "none";
+            }
+            function setlist(mode){
+                document.getElementById("optionMode").innerHTML = mode;
+                if(site=="anyl") anylMode = mode;
+                if(site=="anyr") anyrMode = mode;
+                hideList();
+            }
+            function hideList(){
+                setTimeout(function(){document.getElementById("optionList").style.display = "none";},0);
+            }
+            function applyhtml(element){
+                if(site=="anyl") anylhtml = element;
+                if(site=="anyr") anyrhtml = element;
+                applyset(element);
+            }
+            function applyimg(){
+                var element = "<img src='" + imageSrc + "' style='width:" + document.getElementById(site+"width").value + "px'/>";
+                document.getElementById(site+"imgpreview").innerHTML = element;
+                applyset(element);
+            }
+            function applyset(element){
+                document.getElementById(site).innerHTML = element;
+            }
+            //FileReader功能(用于自定义图片)
+            if(window.FileReader){
+                var cusa = "<p style='margin:5px'>图片大小不建议超过2M，<br>否则浏览器会卡顿甚至闪退</p><div><input id='";
+                var cusb = "input' type='file' style='width:100%;border:2px solid #ccc;background:#ccc'/></div><div id='";
+                var cusc = "imgpreview' style='width:100%;max-height:"+ document.body.clientHeight / 4 +"px;overflow:auto;border:2px solid #ccc;background:#ccc;margin:10px 0 0 0;text-align:center'></div><div style='text-align:center;margin:0 0 10px 0;font-size:12px'>图片预览(可划动)</div><div style='text-align:center'>图片宽度 <input id='";
+                var cusd = "width' style='width:50px;padding:5px;border:2px solid #ccc' oninput='applyimg()'/> 像素</div>";
+                document.getElementById('intobgopt').innerHTML = "<input id='userbg' type='file'/><button style='float:right' onclick='background(site)'>恢复默认</button>"
+                document.getElementById("anylimg").innerHTML = cusa+"anyl"+cusb+"anyl"+cusc+"anyl"+cusd;
+                document.getElementById("anyrimg").innerHTML = cusa+"anyr"+cusb+"anyr"+cusc+"anyr"+cusd;
+                document.getElementById("anylwidth").value = "100";
+                document.getElementById("anyrwidth").value = "100";
+                anylimg = document.getElementById("anylinput");
+                anyrimg = document.getElementById("anyrinput");
+                userBg = document.getElementById("userbg");
+                anyrimg.addEventListener('change',imageget,false);
+                anylimg.addEventListener('change',imageget,false);
+                userBg.addEventListener('change',bgget,false);
+                }else{
+                var nosupport = "<div style='text-align:center'>您的浏览器不支持自定义图片</div>";
+                document.getElementById("anylimg").innerHTML  = nosupport;
+                document.getElementById("anyrimg").innerHTML  = nosupport;
+                document.getElementById('intobgopt').innerHTML = "<div style='font-size:12px;color:#fff;padding:5px;text-align:center'>您的浏览器不支持自定义背景图片</div>"
+            }
+            function bgopt(show){
+                if(show=="none"){var a = "none";var b = "block";}
+                else{var a = "block";var b = "none";}
+                document.getElementById('optionbg').style.display = b;
+                document.getElementById('bgopt').style.display = a;
+            }
+            document.getElementById("showPageStatus").innerHTML = "●"
+            document.getElementById("showDisplayStatus").innerHTML = "●"
+            function setStatusOpt(element,id){
+                if(document.getElementById(id).innerHTML=="●"){
+                    document.getElementById(element).style.display = "none";
+                    document.getElementById(id).innerHTML = "○";
+                }
+                else if(document.getElementById(id).innerHTML=="○"){
+                    document.getElementById(element).style.display = "block";
+                    document.getElementById(id).innerHTML = "●";
+                }
+            }
+            document.getElementById("showPageStatus").innerHTML = "●"
+            document.getElementById("showDisplayStatus").innerHTML = "●"
+            setStatusOpt('infs','showDisplayStatus')
+            setStatusOpt('infp','showPageStatus')
+            function imageget(){
+                if(site=="anyl") var file = anylimg.files[0];
+                if(site=="anyr") var file = anyrimg.files[0];
+                if(!/image\/\w+/.test(file.type)){
+                    alert("请确保文件为图像类型");
+                }
+                else{
+                    var reader = new FileReader();
+                    reader.readAsDataURL(file);
+                    reader.onload = function(e){;
+                        imageSrc = this.result;
+                        applyimg();
+                    }
+                }
+            }
+            function background(imgSrc){
+                if(imgSrc==site) var imgSrc = "./resources/dbg"
+                document.getElementById('bg').src = imgSrc;
+            }
+            function bgget(){
+                var file = userBg.files[0];
+                if(!/image\/\w+/.test(file.type)){
+                    alert("请确保文件为图像类型");
+                }
+                else{
+                    var reader = new FileReader();
+                    reader.readAsDataURL(file);
+                    reader.onload = function(e){;
+                        background(this.result);
+                    }
+                }
+            }
+            //set default when the page loading
+            anylMode = "";
+            anyrMode = "";
+            anylhtml = "<!--文字牌--><div style='background:#fff;padding:10px;white-space:nowrap;font-size:20px;color:#aaa'>伞兵</div>";
+            anyrhtml = "<!--小型浏览器牌--><iframe src='https://m.bilibili.com/space/513308856?from=search' framespacing='0' allowfullscreen='true' style='width:200px;height:150px;background:#fff;margin:0'></iframe>";
+            optionSwitch('right');
+            defaultmode('默认')
+            optionSwitch('left');
+            defaultmode('默认')
+            background(site);
+            //create image element for duck animation
+            imgnum = 1;
+            createimg();
+            function createimg(){
+                ShowImg = document.createElement("img");
+                document.getElementById("infp").innerText = "Loading page "+imgnum+"/133";
+                ShowImg.id = "img"+imgnum;
+                ShowImg.style = "position:absolute;z-index:2;width:200%;left:50%;top:60%;transform:translate3d(-50%,-50%,0);display:none";
+                var imagesrc = "resources/" + imgnum;
+                ShowImg.src = imagesrc;
+                document.getElementById("mainimg").appendChild(ShowImg);
+                imgnum+=1;
+                if(imgnum==134){
+                    imgnum = 1;
+                    flashimg();
+                }
+                else{
+                    createimg();
+                }
+            }
+            //the duck animation
+            function flashimg(){
+                if(imgnum==1){
+                    document.getElementById("img133").style.display = "none";
+                }
+                else{
+                    var numc = imgnum - 1;
+                    document.getElementById("img"+numc).style.display = "none";
+                }
+                document.getElementById("img"+imgnum).style.display = "inline";
+                document.getElementById("infp").innerText = imgnum+"/133";
+                imgnum+=1;
+                if(imgnum==8){
+                    document.getElementById("Left").style = "transform:rotateY(0deg) rotateZ(10deg) rotateX(0deg) translateZ(0px) ;animation:UPhandL 600ms";
+                    document.getElementById("Right").style = "transform:rotateY(0deg) rotateZ(-10deg) rotateX(-180deg) translateZ(0px) ;animation:DNhandR 600ms";
+                }
+                if(imgnum==13){
+                    document.getElementById("wrapl").style.zIndex = "1";
+                    document.getElementById("wrapr").style.zIndex = "3";
+                    //alert("8");
+                }
+                if(imgnum==66){
+                    document.getElementById("wrapr").style = "left:40%;transform:perspective(400px) rotateX(0) rotateY(30deg) rotateZ(0);bottom:48%;animation:play2l 2595ms";
+                    document.getElementById("wrapl").style = "left:40%;transform:perspective(400px) rotateX(0) rotateY(30deg) rotateZ(0);bottom:48%;animation:play2l 2595ms";
+                    document.getElementById("wrapl").style.zIndex = "1";
+                    document.getElementById("wrapr").style.zIndex = "3";
+                }
+                if(imgnum==84){
+                    document.getElementById("Left").style = "transform:rotateY(0deg) rotateZ(10deg) rotateX(-180deg) translateZ(0px) ;animation:DNhandL 600ms"
+                    document.getElementById("Right").style = "transform:rotateY(0deg) rotateZ(-10deg) rotateX(0deg) translateZ(0px) ;animation:UPhandR 600ms"
+                }
+                if(imgnum==89){
+                    document.getElementById("wrapl").style.zIndex = "3";
+                    document.getElementById("wrapr").style.zIndex = "1";
+                    //alert("87");
+                }
+                if(imgnum==134){
+                    imgnum = 1;
+                    document.getElementById("wrapr").style = "left:40%;transform:perspective(400px) rotateX(0) rotateY(-30deg) rotateZ(0);bottom:48%;animation:play2r 2595ms";
+                    document.getElementById("wrapl").style = "left:40%;transform:perspective(400px) rotateX(0) rotateY(-30deg) rotateZ(0);bottom:48%;animation:play2r 2595ms";
+                    document.getElementById("wrapl").style.zIndex = "3";
+                    document.getElementById("wrapr").style.zIndex = "1";
+                }
+                setTimeout("flashimg()",33);
+            }
+            //5 80
+            //10 87
+            function showOption(){
+                document.getElementById('optionbg').style.display = 'block';
+            }
+            showOption()
+            window.onload = function(){document.getElementById('loading').style.display = 'none'};
+        </script>
+    </body>
+</html>
