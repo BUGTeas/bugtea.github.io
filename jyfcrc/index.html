@@ -1,1 +1,147 @@
-
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+	<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+	<!--<meta http-equiv="set-cookie" content=" cookieName = cookieValue;" />-->
+	<title>反向投屏</title>
+	<style>
+		html,body{
+			margin:0px;
+			height:100%;
+			width:100%;
+			font-size:0px;
+			font-family:sans-serif;
+			overflow:hidden;
+		}
+		#mainpage{
+			width:100%;
+			height:100%;
+			margin:0px;
+			border:0px;
+			position:absolute;
+			top:0px;
+			left:0px;
+		}
+		#loadface{
+			padding:20px;
+			height:calc(100% - 40px);
+			overflow:auto;
+		}
+		@keyframes loadani{
+			0%{
+				border-top:3px solid #fff;
+				border-right:3px solid #666;
+				border-bottom:3px solid #666;
+				border-left:3px solid #ccc;
+				transform:rotate(0deg);
+			}
+			25%{
+				border-top:3px solid #ccc;
+				border-right:3px solid #fff;
+				border-bottom:3px solid #666;
+				border-left:3px solid #666;
+			}
+			50%{
+				border-top:3px solid #666;
+				border-right:3px solid #ccc;
+				border-bottom:3px solid #fff;
+				border-left:3px solid #666;
+			}
+			75%{
+				border-top:3px solid #666;
+				border-right:3px solid #666;
+				border-bottom:3px solid #ccc;
+				border-left:3px solid #fff;
+			}
+			100%{
+				border-top:3px solid #fff;
+				border-right:3px solid #666;
+				border-bottom:3px solid #666;
+				border-left:3px solid #ccc;
+				transform:rotate(360deg);
+			}
+		}
+		.roundbox{
+			border-radius:10px;
+			box-shadow:0 0 10px #ccc;
+			padding:10px;
+			max-width:480px;
+		}
+	</style>
+</head>
+<body>
+	<div id="loadface">
+		<div id="leftbox" style="display:inline-block;font-size:16px;vertical-align:top">
+			<div class="roundbox">
+				<div style="font-size:18px">欢迎使用「反向投屏」！</div>
+				<div style="font-size:12px">在教室WiFi下用手机观看讲台屏幕的画面，支持截屏操作</div>
+			</div>
+			<div style="margin:20px 0px">
+				<div id="loadtips">
+					<div id="loadanimation" style="width:24px;height:24px;border-radius:50%;display:inline-block;vertical-align:top;animation:loadani 0.5s infinite linear"></div><div style="display:inline-block;font-size:24px;line-height:24px;margin:4px 10px">正在寻找服务器...</div>
+					<div style="margin-top:10px">需要 20 秒左右的时间，请耐心等待...</div>
+				</div>
+				<div id="nofoundtips" style="display:none">
+					<div style="display:inline-block;font-size:24px;line-height:24px;margin:4px 0px">❌ 无法找到服务器</div>
+					<div style="margin-top:10px">3 秒后自动刷新页面</div>
+				</div>
+				<div>请确保讲台电脑已开机<br>且您的设备已连接到以下 WiFi：</div>
+			</div>
+		</div>
+		<div class="roundbox" style="display:inline-block;">
+			<div style="font-size:16px">WiFi 名称</div>
+			<div style="font-size:20px"><span style="font-size:16px;background-color:#07f;color:#fff;display:inline-block;margin-bottom:5px;border-radius:5px;padding:0px 5px">更快</span>&nbsp;openjyfcwifi_5G<br><span style="font-size:16px;background-color:#0a6;color:#fff;display:inline-block;margin-bottom:5px;border-radius:5px;padding:0px 5px">更稳</span>&nbsp;openjyfcwifi</div>
+			<div style="font-size:16px;margin-top:5px">密码</div>
+			<div style="font-size:20px">23333333</div>
+			<div style="font-size:14px;margin-top:5px">教室免费WiFi，省流神器，可访问绝大多数网站，支持局域网游戏</div>
+		</div>
+	</div>
+	<iframe id="mainpage" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" oallowfullscreen="true" msallowfullscreen="true" style="display:none"></iframe>
+	<script>
+		function linkto(link){
+			document.getElementById("mainpage").src = "http://10.78.84." + link + ":2333/";
+			document.getElementById("mainpage").style.display = "block"
+		}
+		function serverNoFoundExec(){
+			document.getElementById("loadtips").style.display = "none";
+			document.getElementById("nofoundtips").style.display = "block";
+			setTimeout("window.location.reload()",3000);
+		}
+		function resize(){
+			if(document.body.clientHeight>=document.body.clientWidth){
+				document.getElementById("leftbox").style.width = "100%";
+				document.getElementById("leftbox").style.marginRight = "0px";
+				document.getElementsByClassName("roundbox")[1].style.width = "calc(100% - 20px)";
+				
+			}
+			else{
+				document.getElementById("leftbox").style.width = "calc(50% - 10px)";
+				document.getElementById("leftbox").style.marginRight = "20px";
+				document.getElementsByClassName("roundbox")[1].style.width = "calc(50% - 30px)";
+			}
+		}
+		window.onresize = function(){resize()};
+		resize();
+		serverNoFound = 0;
+		serverFound = false;
+		setTimeout(function(){
+			for(ipnum = 100; ipnum <= 200; ipnum ++){
+				var loadscript = document.createElement("script");
+				loadscript.onerror = function(){
+					serverNoFound ++;
+					if(serverNoFound>=101) serverNoFoundExec();
+					document.title = serverNoFound
+				}
+				loadscript.id = "loadFromIP" + ipnum;
+				loadscript.src = "http://10.78.84." + ipnum + ":2333/found_server.js"
+				eval("loadscript.onload = function(){if(serverFound=='21jy1') linkto('" + ipnum + "')}");
+				document.body.appendChild(loadscript);
+				
+			}
+			for(rmnum = 100; rmnum <= 200; rmnum ++){
+				if(document.getElementById("loadFromIP" + rmnum)) document.getElementById("loadFromIP" + rmnum).remove();
+			}
+		},0);
+	</script>
+</body>
+</html>
