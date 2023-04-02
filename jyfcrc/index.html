@@ -99,7 +99,7 @@
 	<iframe id="mainpage" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" oallowfullscreen="true" msallowfullscreen="true" style="display:none"></iframe>
 	<script>
 		function linkto(link){
-			document.getElementById("mainpage").src = "http://10.78.84." + link + ":2333/";
+			document.getElementById("mainpage").src = "//10.78.84." + link + ":2333/";
 			document.getElementById("mainpage").style.display = "block"
 		}
 		function serverNoFoundExec(){
@@ -133,7 +133,7 @@
 					document.title = serverNoFound
 				}
 				loadscript.id = "loadFromIP" + ipnum;
-				loadscript.src = "http://10.78.84." + ipnum + ":2333/found_server.js"
+				loadscript.src = "//10.78.84." + ipnum + ":2333/found_server.js"
 				eval("loadscript.onload = function(){if(serverFound=='21jy1') linkto('" + ipnum + "')}");
 				document.body.appendChild(loadscript);
 				
