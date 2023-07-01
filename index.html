@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+	<title>BUGteas's Page</title>
+	<!--轮播图依赖-->
+    <link rel="stylesheet" href="./resources/libs/swiper-bundle.min.css">
+    <script src="./resources/libs/swiper-bundle.min.js"></script>
+	<!--自家依赖-->
+	<link rel="stylesheet" href="./resources/style/home.css"/>
+	<script type="text/javascript" src="./JsonList.js"></script>
+</head>
+
+<body>
+	<div id="top">
+		<div id="logo">
+		</div>
+		<div id="navbar">
+			<div style="margin:10px;display:inline-block;font-weight:bold;">BUGtea's Page</div>
+            <a style="margin:0px 10px;border:1px solid #fff;border-radius:5px;float:right;text-decoration:none;padding:8px;color:#fff;display:block" href="https://space.bilibili.com/513308856">bilibili</a>
+            <a style="margin:0px 10px;border:1px solid #fff;border-radius:5px;float:right;text-decoration:none;padding:8px;color:#fff;display:block" href="https://www.github.com/BUGTeas">Github</a>
+		</div>
+	</div>
+	<div id="main">
+		<div class="blockAreaA allArea" id="Part">
+			<div class="listTitle">精选内容</div>
+			<div class="carouselArea">
+				<!--轮播内容区域-->
+				<div class="swiper-wrapper"></div>
+				<!-- Add Pagination -->
+				<div class="swiper-pagination"></div>
+				<!-- Add Arrows -->
+				<div class="swiper-button-next"></div>
+				<div class="swiper-button-prev"></div>
+				<div class='title'>在 Bilibili 上发布的视频</div>
+			</div>
+		</div>
+	</div>
+	<img src="./resources/toTop.png" id="toTopBtn">
+	<script type="text/javascript">
+		var logoHeight = document.getElementById("logo").clientHeight;
+		var allList = document.getElementsByClassName("allArea");
+		var navItem = document.getElementsByClassName("navItem");
+		var topBox = document.getElementById("top");
+		var navBar = document.getElementById("navbar");
+		var toTopBtn = document.getElementById("toTopBtn");
+		topBox.style.top = 0;
+		//页面滚动时执行
+		window.onscroll = function() {
+			var scrollTop = document.documentElement.scrollTop;
+			if(scrollTop <= logoHeight){
+				//展开导航栏和logo
+				topBox.style.position = "absolute";
+				topBox.style.top = "0px";
+				toTopBtn.style.right = '-80px';
+			}
+			else{
+				//离开顶部时隐藏logo并固定导航栏
+				topBox.style.position = "fixed";
+				topBox.style.top = "-" + logoHeight + "px";
+				toTopBtn.style.right = '20px';
+			}
+		};
+		//设置右下角返回顶部按钮
+		toTopBtn.onclick = function(){
+			autoScroll(0)
+		}
+		toTopBtn.ontouchstart = toTopBtn.onmousedown = function(){
+			return false
+		}
+		//启动页面滚动动画
+		autoScrollId = 0;
+		function autoScroll(scrollTo){
+			if(document.documentElement.scrollTop != scrollTo){
+				autoScrollId ++;
+				autoScrSet = {
+					smoothDistance:25 * (1 + 25) / 2,
+					oneFremeDistance:25
+				}
+				//console.log(String((document.documentElement.scrollTop - scrollTo) / 25).split(".")[0])
+				if(scrollTo + document.documentElement.clientHeight < document.body.clientHeight + topBox.clientHeight) autoScrollProcess(autoScrollId, scrollTo);
+				else autoScrollProcess(autoScrollId, document.body.clientHeight - document.documentElement.clientHeight + topBox.clientHeight);
+			}
+		}
+		//页面滚动动画程序
+		function autoScrollProcess(id, scrollTo){
+			if(id == autoScrollId) {
+				//向上滑动或向下
+				var nowScrollTop = document.documentElement.scrollTop;
+				if(scrollTo < nowScrollTop) document.documentElement.scrollTop = nowScrollTop - autoScrSet.oneFremeDistance;
+				else document.documentElement.scrollTop = nowScrollTop + autoScrSet.oneFremeDistance;
+				//线性平滑减速
+				var afterScrollTop = document.documentElement.scrollTop;
+				if(nowScrollTop < afterScrollTop & scrollTo - afterScrollTop <= autoScrSet.smoothDistance & autoScrSet.oneFremeDistance>1) autoScrSet.oneFremeDistance --;
+				else if(nowScrollTop > afterScrollTop & afterScrollTop - scrollTo <= autoScrSet.smoothDistance & autoScrSet.oneFremeDistance>1) autoScrSet.oneFremeDistance --;
+				//一帧滑动后执行下一帧
+				if(/*上滑*/document.documentElement.scrollTop - autoScrSet.oneFremeDistance > scrollTo | /*下滑*/document.documentElement.scrollTop + autoScrSet.oneFremeDistance < scrollTo) {
+					setTimeout(function(){autoScrollProcess(id, scrollTo)}, 1);
+				} else document.documentElement.scrollTop = scrollTo;
+			}
+		}
+		//调整窗口布局
+		windowLastHeight = windowLastWidth = 0;
+		resizeSet = false;
+		function resize(){
+			if(document.body.clientWidth == windowLastWidth && document.body.clientHeight == windowLastHeight){
+				if(resizeSet == true){
+					//该操作只在窗口大小调整完后执行一次
+					resizeSet = false;
+					//启用鼠标悬停时的过渡动画
+					for(i=0;i<blockItems.length;i++){
+						if(blockItems[i]) blockItems[i].style.transitionDuration = "300ms";
+					}
+					if(carouselList[0]) carouselList[0].style.transitionDuration = "300ms";
+				}
+			}
+			else{
+				resizeSet = true;
+				document.getElementById("main").style.marginTop = document.getElementById("top").clientHeight + "px";
+				//根据页面宽度自动选择左边距
+				if(document.body.clientWidth>=380) var mainMargin = 80;
+				else var mainMargin = 20;
+
+				var ListWidthA = (document.body.clientWidth - mainMargin) / (blockItemsWidthA + 20);
+				var ListMinWidthA = Number(String(ListWidthA).split(".")[0]) * (blockItemsWidthA + 20);
+				if(ListMinWidthA<=0) ListMinWidthA = blockItemsWidthA + 20;
+				var BlockLsScaleA = (ListWidthA * (blockItemsWidthA + 20)) / ListMinWidthA;
+
+				for(i=0;i<blockList.length;i++){
+					if(blockList[i]){
+						blockList[i].style.width = (ListMinWidthA * BlockLsScaleA) + "px";
+					}
+				}
+				for(i=0;i<blockItems.length;i++){
+					if(blockItems[i]){
+						blockItems[i].style.transitionDuration = "0s";
+						blockItems[i].style.width = (blockItemsWidthA * BlockLsScaleA) + "px";
+						blockItems[i].style.height = (blockItemsHeightA * BlockLsScaleA) + "px";
+						blockItems[i].style.margin = (10 * BlockLsScaleA) + "px";
+					}
+				}
+				if(carouselList[0]){
+					carouselList[0].style.transitionDuration = "0s";
+					if (Number(String(ListWidthA).split(".")[0]) >= 2) {
+						carouselList[0].style.width = ((blockItemsWidthA * 2 + 20) * BlockLsScaleA) + "px";
+						carouselList[0].style.height = ((blockItemsHeightA * 2 + 20) * BlockLsScaleA) + "px";
+						carouselList[0].style.margin = (9.9 * BlockLsScaleA) + "px " + (10 * BlockLsScaleA) + "px";
+					} else {
+						carouselList[0].style.width = (blockItemsWidthA * BlockLsScaleA) + "px";
+						carouselList[0].style.height = (blockItemsHeightA * BlockLsScaleA) + "px";
+						carouselList[0].style.margin = (10 * BlockLsScaleA) + "px";
+					}
+				}
+			}
+			windowLastHeight = document.body.clientHeight;
+			windowLastWidth = document.body.clientWidth;
+			setTimeout("resize()",1);
+		}
+		//按json加载内容
+		function loadItemFromJson(){
+			for (i = 0; i < (itemLoadJsonList.length || bPushLoadJsonList.length); i ++){
+				if(itemLoadJsonList[i]){
+					var item = itemLoadJsonList[i];
+					console.log("Loaded infomation for item" + i);
+					//按照内容脚本设置加载到对应板块
+					var newItem = document.createElement("a");
+					newItem.className = "blockItems";
+					if(item.linkTo) newItem.href = item.linkTo;
+					else newItem.href = "./item.html?" + i;
+					var itemBg = document.createElement("div");
+					itemBg.className = "itemsBg";
+					if(item.index) newItem.appendChild(itemBg);
+					if(item.cover[0] != "." & item.cover[0] != "/") itemBg.style.backgroundImage = newItem.style.backgroundImage = "url('./resources/items/item" + i + "/media/" + item.cover + "')";
+					else itemBg.style.backgroundImage = newItem.style.backgroundImage = "url('" + item.cover + "')";
+					if(item.index){
+						newItem.innerHTML += "<div class='iteminfo'>" + item.index + "</div>";
+						newItem.innerHTML += "<div class='title'>" + item.title + "</div>";
+					}
+					else if(item.title) newItem.innerHTML += "<div class='titleNA'>" + item.title + "</div>";
+					newItem.innerHTML += "<div class='opentips'>点击进入 ＞</div>";
+					//显示内容
+					if(document.getElementById("Part").children.length == 2) document.getElementById("Part").appendChild(newItem);
+					else if(document.getElementById("Part").children.length > 2) document.getElementById("Part").insertBefore(newItem,document.getElementById("Part").children[2]);
+				}
+				else if(i != 0) console.log("Item" + i + " has been skipped.");
+				if(bPushLoadJsonList[i]){
+					var item = bPushLoadJsonList[i];
+					console.log("Loaded Bilibili push cover" + i);
+					//按照内容脚本设置加载到对应板块
+					var newItem = document.createElement("a");
+					newItem.className = "swiper-slide";
+					newItem.href = "https://www.bilibili.com/video/BV" + item.bvid;
+					newItem.style.backgroundImage = "url('./resources/coverOfRcmdBiliVideos/" + item.cover + "')";
+					//显示内容
+					if(document.getElementsByClassName("swiper-wrapper")[0].children.length == 0) document.getElementsByClassName("swiper-wrapper")[0].appendChild(newItem);
+					else document.getElementsByClassName("swiper-wrapper")[0].insertBefore(newItem,document.getElementsByClassName("swiper-wrapper")[0].children[0]);
+				}
+				else console.log("Bilibili push cover" + i + " has been skipped.");
+			}
+			//轮播图swiper
+			var swiper = new Swiper('.carouselArea', {
+				spaceBetween: 0,
+				loop: true,
+				autoplay: {
+					delay:2000,
+					disableOnInteraction: false
+				},
+				speed:500,
+				navigation: {
+					nextEl: ".swiper-button-next",
+					prevEl: ".swiper-button-prev",
+				},
+				pagination: {
+					el: ".swiper-pagination",
+					clickable: true,
+					renderBullet: function (index, className) {
+					return '<span class="' + className + '">' + (index + 1) + "</span>";
+					},
+				},
+			});
+			//鼠标悬停时暂停轮播
+			swiper.el.onmouseover = function(){
+				swiper.autoplay.stop();
+			}
+			swiper.el.onmouseout = function(){
+				swiper.autoplay.start();
+			}
+		}
+		itemLoaded = false;
+		loadItemFromJson();
+		window.onload = function(){
+			window.onscroll();
+			blockItemsWidthA = document.getElementsByClassName("blockItems")[0].clientWidth;
+			blockItemsHeightA = document.getElementsByClassName("blockItems")[0].clientHeight;
+			blockList = document.getElementsByClassName("blockAreaA");
+			blockItems = document.getElementsByClassName("blockItems");
+			carouselList = document.getElementsByClassName("carouselArea");
+			resize();
+		};
+	</script>
+</body>
+</html>

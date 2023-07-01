@@ -1,0 +1,120 @@
+@charset "UTF-8";
+*{
+    font-size:0px;
+    margin:0px;
+    padding:0px;
+}
+body{
+    min-width:320px;
+    background-color:#223;
+	font-family:"Square721 BT",sans-serif;
+}
+main{
+    max-width:1280px;
+    margin:0px auto;
+}
+header button{
+    font-size:16px;
+    padding:5px 15px;
+    border-radius:20px;
+    margin:10px;
+    border:0px;
+    background-color:rgba(255,255,255,0.2);
+    color:#fff;
+    outline:0;
+}
+header button:hover{
+    background-color:rgba(255,255,255,0.4);
+}
+header{
+    background-color:rgb(0,100,220);
+    color:#fff;
+}
+#headerTitle{
+    font-size:16px;
+}
+#articleTop{
+    overflow:hidden;
+    padding:20px;
+}
+#articleTitle{
+    font-size:36px;
+    font-weight:lighter;
+    color:#fff;
+}
+#articleTagBox{
+    margin:10px 0px;
+}
+.articleTags{
+    display:inline-block;
+    padding:5px 10px;
+    margin:5px 5px 0px 0px;
+    background-color:rgba(127,127,127,0.5);
+    color:#fff;
+    font-size:15px;
+    border-radius:15px;
+}
+#articleIndex{
+    background-color:rgba(127,127,127,0.5);
+    color:#fff;
+    padding:15px;
+    border-radius:15px;
+    font-size:16px;
+}
+#articleConfigBox{
+    margin:20px;
+    color:#fff;
+}
+.articleCfgTitles{
+    font-size:18px;
+}
+.articleCfgItems{
+    font-size:16px;
+    color:#aaa;
+    margin-bottom:10px;
+}
+#article *{
+    color:#fff;
+    font-size:16px;
+}
+#article p{
+    margin:20px;
+}
+#article img{
+    max-width:100%;
+    border-radius:20px;
+}
+#article hr{
+    margin:0px 20px 20px 20px;
+    border:0px;
+    background-color:#aaa;
+    height:1px;
+}
+#codetry{
+    padding:20px;
+    display:none;
+}
+#codetry textarea{
+    font-size:16px;
+    background-color:rgba(127,127,127,0.5);
+    color:#fff;
+    border:0px;
+    padding:10px;
+    font-family:simhei, monospace;
+    outline:0px;
+    min-width:calc(100% - 20px);
+    max-width:calc(100% - 20px);
+    min-height:300px;
+    max-height:600px;
+}
+#codetry #preview{
+    font-size:16px;
+    background-color:#fff;
+    border:0px;
+    padding:10px;
+    width:calc(100% - 20px);
+    min-height:300px;
+}
+#codetry #preview *{
+    font-size:16px;
+}
