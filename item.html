@@ -1,181 +1,440 @@
-<!doctype html>
-<html lang="zh-Hans">
-<head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
-	<link rel="stylesheet" href="./resources/style/item.css"/>
-    <script>
-        var itemTag;
-        var itemInfo;
-        var itemSrcLnk;
-        var itemConfig;
-        var itemMain;
-        var codeTry;
-        var loadNum = window.location.href.split("?")[1];
-        window.onload = function(){if(loadNum){
-            var Sprofile = document.createElement("script");
-            Sprofile.type = "text/javascript";
-            Sprofile.src = "./resources/items/item" + loadNum + "/index.js"
-            document.body.appendChild(Sprofile);
-                Sprofile.onload = function(){
-                if(itemLoaded){
-                    if(itemFromPart[0]=="steam") itemFromPart = "Steam 游戏"
-                    if(itemFromPart[0]=="web") itemFromPart = "网页设计经验"
-                    if(itemFromPart[0]=="push") itemFromPart = "推荐内容"
-                    document.title += itemIndexTitle + " - " + itemFromPart + "相关";
-                    document.getElementById("headerTitle").innerHTML += itemFromPart + "相关";
-                    document.getElementById("articleTopImg").src = "./resources/items/item" + loadNum + "/media/" + itemIndexImage;
-                    document.getElementById("articleTitle").innerHTML = itemIndexTitle;
-
-                    if(itemConfig){
-                        var itemCfgList = itemConfig.split("\t");
-                        for (l = 0; l < itemCfgList.length; l ++){
-                            var itemCfgItemList = itemCfgList[l].split("\n");
-                            if (itemCfgItemList[0]){
-                                var articleCfg = document.createElement("div");
-                                articleCfg.className = "articleCfgTitles";
-                                articleCfg.innerHTML = itemCfgItemList[0];
-                                document.getElementById("articleConfigBox").appendChild(articleCfg);
-                                if (itemCfgItemList[1]){
-                                    var articleCfg = document.createElement("div");
-                                    articleCfg.className = "articleCfgItems";
-                                    articleCfg.innerHTML = itemCfgItemList[1];
-                                    document.getElementById("articleConfigBox").appendChild(articleCfg);
-                                }
-                            }
-                        }
-                    }
-
-                    document.getElementById("articleIndex").innerHTML = itemIndex;
-
-                    if(itemTag){
-                        var itemTagsList = itemTag.split("\t");
-                        for (l = 0; l < itemTagsList.length; l ++){
-                            var articleTag = document.createElement("div");
-                            articleTag.className = "articleTags";
-                            articleTag.innerHTML = itemTagsList[l];
-                            document.getElementById("articleTagBox").appendChild(articleTag);
-                        }
-                    }
-                    
-                    if(itemMain){
-                        var hr = document.createElement("hr");
-                        document.getElementById("article").appendChild(hr);
-                        var itemPrghList = itemMain.split("$n");
-                        for (l = 0; l < itemPrghList.length; l ++){
-                            var tstart = false;
-                            for (m = 0; m < itemPrghList[l].length; m ++){
-                                if(itemPrghList[l][m] == "$"){
-                                    m ++;
-                                    if(itemPrghList[l][m] == "h"){
-                                        if(!tstart){
-                                            itemPrghList[l] = itemPrghList[l].substring(0,m - 1) + "<span style='font-size:24px'>" + itemPrghList[l].substring(m + 1,itemPrghList[l].length)
-                                            tstart = true;
-                                        } else if(tstart){
-                                            itemPrghList[l] = itemPrghList[l].substring(0,m - 1) + "</span>" + itemPrghList[l].substring(m + 1,itemPrghList[l].length);
-                                            tstart = false;
-                                        }
-                                    }
-                                    if(itemPrghList[l][m] == "b"){
-                                        if(!tstart){
-                                            itemPrghList[l] = itemPrghList[l].substring(0,m - 1) + "<span style='font-weight:bolder'>" + itemPrghList[l].substring(m + 1,itemPrghList[l].length)
-                                            tstart = true;
-                                        } else if(tstart){
-                                            itemPrghList[l] = itemPrghList[l].substring(0,m - 1) + "</span>" + itemPrghList[l].substring(m + 1,itemPrghList[l].length);
-                                            tstart = false;
-                                        }
-                                    }
-                                    if(itemPrghList[l][m] == "i"){
-                                        if(!tstart){
-                                            itemPrghList[l] = itemPrghList[l].substring(0,m - 1) + "<img src='./resources/items/item" + loadNum + "/media/" + itemPrghList[l].substring(m + 1,itemPrghList[l].length);
-                                            tstart = true;
-                                        } else if(tstart){
-                                            itemPrghList[l] = itemPrghList[l].substring(0,m - 1) + "'>" + itemPrghList[l].substring(m + 1,itemPrghList[l].length)
-                                            tstart = false;
-                                        }
-                                    }
-                                    if(itemPrghList[l][m] == "p"){
-                                        if(!tstart){
-                                            itemPrghList[l] = itemPrghList[l].substring(0,m - 1) + "<img src='" + itemPrghList[l].substring(m + 1,itemPrghList[l].length);
-                                            tstart = true;
-                                        } else if(tstart){
-                                            itemPrghList[l] = itemPrghList[l].substring(0,m - 1) + "'>" + itemPrghList[l].substring(m + 1,itemPrghList[l].length)
-                                            tstart = false;
-                                        }
-                                    }
-                                    if(itemPrghList[l][m] == "l"){
-                                        if(!tstart){
-                                            itemPrghList[l] = itemPrghList[l].substring(0,m - 1) + "<a href='" + itemPrghList[l].substring(m + 1,itemPrghList[l].length);
-                                            tstart = m + 1;
-                                        } else if(tstart){
-                                            itemPrghList[l] = itemPrghList[l].substring(0,m - 1) + "' target='_blank'>" + itemPrghList[l].substring(tstart + 7,m - 1) + "</a>" + itemPrghList[l].substring(m + 1,itemPrghList[l].length)
-                                            tstart = false;
-                                        }
-                                    }
-                                }
-                            }
-                            var articlePrgh = document.createElement("p");
-                            articlePrgh.innerHTML = itemPrghList[l].replace("$t","&nbsp;&nbsp;&nbsp;&nbsp;");
-                            document.getElementById("article").appendChild(articlePrgh);
-                        }
-                    }
-                    if(codeTry){
-                        document.getElementById('codetry').style.display = "block";
-                        document.getElementById('inputcode').innerHTML = codeTry;
-                    }
-                }
-                else document.getElementById("articleIndex").innerHTML = "该文章已被禁用，无法访问！";
-                setTimeout("winResize()",10);
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <style>
+        body{
+            margin:0px;
+            background-color:#eee;
+            font-family:sans-serif;
+        }
+        header{
+            background-color: #fff;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.25);
+            padding: 5px;
+            position:fixed;
+            top:0px;
+            width:calc(100% - 10px);
+            z-index: 3;
+        }
+        #headBox{
+            max-width: 1110px;
+            margin-left:50%;
+            width:100%;
+            transform:translate(-50%, 0px);
+            display:flex;
+            transition-property: all;
+            transition-duration: 0.3s;
+        }
+        #headBtn{
+            font-size:0px;
+            width:38px;
+            margin:5px;
+            transition-property: all;
+            transition-duration: 0.3s;
+            overflow:hidden;
+            border-radius:50%;
+        }
+        #headBtn:hover{
+            background-color:rgba(127,127,127,0.25);
+        }
+        #headBtn:active{
+            background-color:rgba(127,127,127,0.5);
+        }
+        #headText{
+            flex:1;
+            overflow: hidden;
+            white-space: nowrap;
+            line-height:48px;
+            font-size:18px;
+            margin-left:5px;
+        }
+        nav{
+            width:300px;
+            position:fixed;
+            height:100%;
+            display:flex;
+            flex-direction: column;
+            overflow:hidden;
+            background-color:#fff;
+            top: 0px;
+            font-size:16px;
+            left: -300px;
+            z-index: 4;
+            animation-name: navClose;
+            animation-duration: 0.3s;
+        }
+        #navBox{
+            width:300px;
+            flex:1;
+            overflow:auto;
+        }
+        #navBox div, #toTop{
+            padding:15px;
+        }
+        #navBox div:hover, #toTop:hover{
+            background:#eee;
+        }
+        #toTop{
+            min-width: 180px;;
+            box-shadow: 0px 0px 5px #ccc;
+        }
+        main{
+            background-color: #fff;
+            max-width: 1080px;
+            margin-left: 50%;
+            margin-top: 58px;
+            position: relative;
+            width: calc(100% - 40px);
+            transform: translate(-50%, 0px);
+            padding: 10px;
+            padding-bottom: 100px;
+            word-break: break-word;
+            transition-property: all;
+            transition-duration: 0.3s;
+        }
+        main p{
+            
+            font-size: 18px;
+            line-height: 28px;
+        }
+        #navBg{
+            position: fixed;
+            width:100%;
+            height:100%;
+            top:0px;
+            left:0px;
+            z-index:3;
+            display: none;
+            background-color:rgba(0,0,0,0);
+            transition-property: all;
+            transition-duration:0.3s;
+        }
+        @media only screen and (min-width: 1320px){
+            #headBox{
+                max-width: 1290px;
             }
-        } else document.getElementById("articleIndex").innerHTML = "请不要直接打开此页面，请点击左上角返回首页或打开index.html！";}
-        
-        function winResize() {
-            var topBox = document.getElementById("articleTop");
-            var topImg = document.getElementById("articleTopImg");
-            var topIndex = document.getElementById("articleIndex");
-            topImg.style.width = "calc(50% - 20px)";
-            topImg.style.maxWidth = "780px";
-            topImg.style.margin = "20px";
-            topImg.style.float = "left";
-            topBox.style.height = "auto";
-			topBox.style.paddingLeft = "0px"
-            if (topBox.offsetHeight - 40 > topImg.offsetHeight) {
-                topImg.style.float = "none";
-                topImg.style.width = "100%";
-                topImg.style.maxWidth = "100%";
-                topImg.style.margin = "0px";
-                topImg.style.borderRadius = "0px"
-				topBox.style.paddingLeft = "20px"
-            } else {
-                topImg.style.borderRadius = "20px"
-                topBox.style.height = topImg.clientHeight + "px";
+            #headBtn{
+                width:0px;
+            }
+            nav{
+                left: calc(50% - 550px - 90px);
+                height: calc(100% - 58px);
+                top: 58px;
+                width: 180px;
+                z-index: 2;
+                border-right: 1px solid #ccc;
+                animation-name: navOpen;
+                animation-duration: 0.3s;
+                transition-property: all;
+                transition-duration: 0.3s;
+            }
+            #navBox{
+                width: 180px;
+            }
+            main{
+            transform:translate(calc(-50% + 90px), 0px);
             }
         }
-        window.onresize = winResize
-    </script>
-</head>
+        img{
+            max-width:100%;
+            box-shadow:0px 0px 5px #aaa;
+        }
+        h1{
+            margin:10px 0px;
+            font-weight:300;
+        }
+        h2{
+            font-size:26px;
+        }
+        h3{
+            font-size:22px;
+        }
+        h4{
+            font-size:20px;
+        }
+        .imgTips{
+            display:inline-block;
+            position:relative;
+        }
+        .imgTips div{
+            position:absolute;
+            line-height:0px;
+            color:#f00;
+        }
+    </style>
 <body>
     <header>
-        <button onclick="window.location.href = './index.html';">返回首页</button><span id="headerTitle"></span>
+        <div id="headBox">
+            <div id="headBtn">
+                <svg onclick="showNav()" style="height:28px;width:28px;padding:5px;fill:rgb(102, 102, 102)" focusable="false" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"></path></svg>
+            </div>
+            <div id="headText">标题内容</div>
+        </div>
     </header>
-    <main>
-        <img id="articleTopImg"/>
-        <div id="articleTop">
-            <div id="articleTitle"></div>
-            <div id="articleTagBox"></div>
-        <div id="articleIndex"></div>
-        </div>
-        <div id="articleConfigBox"></div>
-        <div id="article"></div>
-        <div id="codetry">
-            <p style="font-size:24px;color:#fff;margin-bottom:10px">代码体验（可编辑）</p>
-            <textarea id="inputcode"></textarea>
-            <button onclick="document.getElementById('preview').innerHTML = document.getElementById('inputcode').value" style="font-size:18px;color:#fff;border:0px;outline:0px;padding:10px 20px;margin:10px 0px;border-radius:20px;background-color:rgb(0, 89, 255)">预览效果</button>
-            <div id="preview">点击上方按钮预览代码效果</div>
-        </div>
-    </main>
-    <footer>
+    <nav style="transition-duration:0.3s;">
+        <div id="navBox"></div>
+        <div id="toTop" top="0">↑返回顶部</div>
+        <!--<img src="../java8/2disk.png"/>-->
+    </nav>
+    <main></main>
+    <div id="navBg" onclick="hideNav()"></div>
+    <div style="display:none" id="navCloseAni">
+        @keyframes navClose{
+            0%, 100%{
+                height: calc(100% - 58px);
+                top:58px;
+                z-index: 2;
+                border-right:1px solid #aaa;
+            }
+            0%{
+                width:180px;
+                left: calc(50% - 550px - 90px);
+            }
+            100%{
+                width:0px;
+                left: calc(50% - 550px);
+            }
+        }
+    </div>
+    <div style="display:none" id="navOpenAni">
+        @keyframes navOpen{
+            0%, 100%{
+                height: calc(100% - 58px);
+                top:58px;
+                z-index: 2;
+                border-right:1px solid #aaa;
+            }
+            0%{
+                width:0px;
+                left: calc(50% - 550px);
+            }
+            100%{
+                width:180px;
+                left: calc(50% - 550px - 90px);
+            }
+        }
+    </div>
+    <script type="text/javascript">
         
-    </footer>
+        mainBox = document.body.children[2];
+        //加载外置脚本
+        function loadJS(path){
+            var Script = document.createElement("script");
+            Script.type = "text/javascript";
+            Script.src = path;
+            document.body.appendChild(Script);
+            return Script;
+        }
+
+
+		//启动页面滚动动画
+		autoScrollId = 0;
+		function autoScroll(scrollTo){
+			if(document.documentElement.scrollTop != scrollTo){
+				autoScrollId ++;
+				autoScrSet = {
+                    //平滑距离（涉及等差数列总和计算）
+					smoothDistance:25 * (1 + 25) / 2,
+                    //每滑动一次的距离
+					oneFremeDistance:25
+				}
+				//console.log(String((document.documentElement.scrollTop - scrollTo) / 25).split(".")[0])
+				if(scrollTo + document.documentElement.clientHeight < document.body.clientHeight) autoScrollProcess(autoScrollId, scrollTo);
+				else autoScrollProcess(autoScrollId, document.body.clientHeight - document.documentElement.clientHeight);
+			}
+		}
+		//页面滚动动画程序
+		function autoScrollProcess(id, scrollTo){
+			if(id == autoScrollId) {
+				//向上滑动或向下
+				var nowScrollTop = document.documentElement.scrollTop;
+				if(scrollTo < nowScrollTop) document.documentElement.scrollTop = nowScrollTop - autoScrSet.oneFremeDistance;
+				else document.documentElement.scrollTop = nowScrollTop + autoScrSet.oneFremeDistance;
+				//线性平滑减速
+				var afterScrollTop = document.documentElement.scrollTop;
+                if(autoScrSet.oneFremeDistance>1){
+                    if(nowScrollTop < afterScrollTop & scrollTo - afterScrollTop <= autoScrSet.smoothDistance) autoScrSet.oneFremeDistance --;
+                    else if(nowScrollTop > afterScrollTop & afterScrollTop - scrollTo <= autoScrSet.smoothDistance) autoScrSet.oneFremeDistance --;
+                }
+				//一帧滑动后执行下一帧
+				if(/*上滑*/document.documentElement.scrollTop - autoScrSet.oneFremeDistance > scrollTo | /*下滑*/document.documentElement.scrollTop + autoScrSet.oneFremeDistance < scrollTo) {
+					setTimeout(function(){autoScrollProcess(id, scrollTo)}, 1);
+				} else document.documentElement.scrollTop = scrollTo;
+			}
+		}
+		//窗口大小调整
+        eleMaxWidth = 1080/*主元素*/ + 10 * 2/*主元素内边距*/ + 10 * 2/*主元素外边距*/ + 180/*宽屏导航栏元素*/ + 20/*滚动条(不同浏览器不一样，就当它宽20吧)*/;
+        nowWidth = minWidth = maxWidth = window.innerWidth;
+        window.onresize = function(){
+            //宽度增加时改变导航栏形态
+            if(window.innerWidth >= 1320) hideNav();
+            nowWidth = document.body.clientWidth;
+            //导航栏形态切换动画
+            //宽度从窄增加时加载动画
+            if(minWidth){
+                if(minWidth > nowWidth) minWidth = nowWidth;
+                if(minWidth < 1320 & nowWidth > minWidth){
+                    var style = document.createElement("style");
+                    style.innerHTML = document.getElementById("navOpenAni").innerHTML;
+                    document.body.appendChild(style);
+                    minWidth = false;
+                }
+            }
+            //宽度从宽减少时加载动画
+            if(maxWidth){
+                if(maxWidth < nowWidth) maxWidth = nowWidth;
+                if(maxWidth >= 1320 & nowWidth <= maxWidth){
+                    var style = document.createElement("style");
+                    style.innerHTML = document.getElementById("navCloseAni").innerHTML;
+                    document.body.appendChild(style);
+                    maxWidth = false;
+                }
+            }
+            //加载索引
+            loadIndex();
+        }
+        //索引按钮点击后
+        function scrollTo(){
+            autoScroll(Number(this.getAttribute("top")));
+            hideNav();
+        }
+        //加载索引
+        function loadIndex(){
+            document.getElementById("toTop").onclick = scrollTo;
+            var eleList = mainBox.children;
+            var n = 0;
+            for (i = 0; i < eleList.length; i ++){
+                if (eleList[i].tagName == "H3"){
+                    //当索引按钮不存在时添加一个
+                    if (!document.getElementById("navBox").children[n]){
+                        var linkBtn = document.createElement("div");
+                        linkBtn.innerHTML = eleList[i].innerHTML;
+                        linkBtn.onclick = scrollTo;
+                        document.getElementById("navBox").appendChild(linkBtn);
+                    }
+                    //设置索引按钮的目标位置
+                    document.getElementById("navBox").children[n].setAttribute("top", eleList[i].offsetTop - 20);
+                    n ++;
+                }
+            }
+        }
+        
+        
+        //窄宽度导航栏形态
+        //展开
+        function showNav(){
+            document.body.children[1].style.transitionDuration = "0.3s";
+            document.body.children[1].style.left = "0px";
+            document.getElementById("navBg").style.display = "block";
+            setTimeout("document.getElementById('navBg').style.backgroundColor = 'rgba(0,0,0,0.4)'", 0);
+        }
+        //收起
+        function hideNav(){
+            document.body.children[1].style.transitionDuration = "0.3s";
+            document.body.children[1].style.left = "";
+            document.getElementById("navBg").style.backgroundColor = "";
+            setTimeout("document.getElementById('navBg').style.display = ''", 300);
+        }
+        
+
+        proFile = loadInfo = false;
+        var loadParam = window.location.href.split("?");
+        if (loadParam[1]) {
+            loadParam = loadParam[1].split("&");
+            for (i = 0; i < loadParam.length; i ++) {
+                var par = loadParam[i].split("=");
+                eval (par[0] + " = par[1]");
+            }
+        }
+        if(proFile){
+            //获取文章脚本的所在路径
+            var srcFnt = "";
+            var srcList = proFile.split("/");
+            for (i = 0; i < srcList.length - 1; i ++){
+                srcFnt += srcList[i] + "/";
+            }
+            var Scr = loadJS(proFile + "?" + Math.random());
+            Scr.onload = function(){
+                var checkInfo = function(){
+                    if(loadInfo){
+                        mainBox.innerHTML = loadInfo;
+                        //将./开头路径的图片设置为文章脚本的所在路径
+                        var imgList = mainBox.getElementsByTagName("img");
+                        for (i = 0; i < imgList.length; i ++){
+                            if (imgList[i].getAttribute("src").substring(0, 2) == "./") {
+                                imgList[i].src = srcFnt + imgList[i].getAttribute("src");
+                            }
+                        }
+                        //将内容为showLink的链接按钮内容改为其链接，并将./开头路径的链接设置为文章脚本的所在路径
+                        var linkList = mainBox.getElementsByTagName("a");
+                        for (i = 0; i < linkList.length; i ++){
+                            if (linkList[i].innerHTML == "showLink"){
+                                linkList[i].innerHTML = linkList[i].href;
+                                linkList[i].target = "_blank";
+                            }
+                            if (linkList[i].getAttribute("href").substring(0, 8) == "itemDir/") {
+                                linkList[i].href = "item.html?proFile=" + srcFnt + linkList[i].getAttribute("href").substring(8,linkList[i].getAttribute("href").length);
+                            }
+                        }
+                        //设置标题
+                        document.title = mainBox.getElementsByTagName("h1")[0].innerHTML;
+                        document.getElementById("headText").innerHTML = document.title;
+                        document.body.appendChild(mainBox);
+                    } else setTimeout(function(){checkInfo()},0);
+                }
+                checkInfo();
+                //else mainBox.innerHTML = "<h1>错误</h1><p>文章已被禁用。</p>";
+            }
+            Scr.onerror = function(){
+                mainBox.innerHTML = "<h1>错误</h1><p>服务器异常或文章已被删除。</p>";
+            }
+        } else mainBox.innerHTML = "<h1>错误</h1><p>请检查链接是否正确。</p>";
+
+
+        
+        window.onload = function(){
+            loadIndex();
+            //指示滚动位置所处的板块对应的导航栏项
+            var listin = false;
+            window.onscroll = function(){
+                var eleList = mainBox.getElementsByTagName("h3");
+                for(i = eleList.length - 1; i > -1; i --){
+                    if(document.documentElement.scrollTop >= eleList[i].offsetTop && !listin){
+                        document.getElementById("navBox").children[i].style.backgroundColor = "#ddd";
+                        listin = true;
+                    } else document.getElementById("navBox").children[i].style = "";
+                }
+                listin = false;
+            }
+        }
+        
+        //触屏导航栏展开时左划隐藏
+        document.body.children[1].ontouchstart = function(e){
+            var moveCnt = 0;
+            var startX = e.touches[0].clientX;
+            var startY = e.touches[0].clientY;
+            var conX,conY;
+            this.style.transitionDuration = "0s";
+            this.ontouchmove = function(e){
+                var nowX = e.touches[0].clientX;
+                var nowY = e.touches[0].clientY;
+                //获取触点移动后距离
+                if(moveCnt < 5) {
+                    conY = nowY - startY;
+                    if(conY < 0) conY = startY - nowY;
+                    conX = nowX - startX;
+                    if(conX < 0) conX = startX - nowX;
+                }
+                moveCnt ++;
+                var setX = -(startX - nowX);
+                if(conX > conY & setX <= 0) this.style.left = setX + "px";
+            }
+            this.ontouchend = function(){
+                if(this.offsetLeft <= -150) hideNav();
+                else showNav();
+            }
+        }
+    </script>
 </body>
 </html>
