@@ -1,0 +1,2 @@
+loadInfo = "<h1>将 HMCL 放在U盘上，插上U盘就能开van</h1><h3>下载 Java</h3><p>与硬盘中安装不同，由于不同电脑安装 Java 的情况不同，因此我们需要在U盘中部署免安装版的 Java。</p><p>下载教程：<a href='item.html?proFile=java/java.js'>下载和安装 Java</a><h3>配置启动器</h3>"
+loadInfo = "<h1>将 HMCL 放在U盘上，插上U盘就能开van</h1><p>抱歉，此文章仍在编写，敬请期待！</p>"
