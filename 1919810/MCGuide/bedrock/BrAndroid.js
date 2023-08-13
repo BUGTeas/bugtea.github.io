@@ -1,0 +1,1 @@
+loadInfo = "<h1>下载和安装 Minecraft 基岩版（Android）</h1><p>抱歉，此文章仍在编写，敬请期待！</p>"
