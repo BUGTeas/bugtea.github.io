@@ -7,7 +7,7 @@ loadInfo = "<h1>Hello HMCL! Launcher (HHML) 官方文档</h1>\
 <p>此外 HHML 脚本还能使得 HMCL 启动器检测当前目录下的Java并自动选择，无需安装或手动添加。</p>\
 <h2>简单用法</h2>\
 <ul style='list-style-type:decimal'>\
-    <li>下载你游玩的MC版本所需的 Java 的压缩包格式（不是安装程序，可以是 OpenJDK）并将其解压，然后从 HMCL 官方网站或 Github 上下载 JAR 格式 的 HMCL，再从本仓库的 Github Pages 下载最新版的 HHML 脚本：<br>Windows 中文版：<a href='/HHML/Windows/HHML-SC-GB2312.bat'>HHML-SC-GB2312.bat</a></br>Windows 英文版：<a href='/HHML/Windows/HHML-EN.bat'>HHML-EN.bat</a><br>如果你使用非简体中文版 Windows 或启用了 UTF-8 全球语言支持，请选择英文版，否则会出现乱码甚至报错！</li>\
+    <li>下载你游玩的MC版本所需的 Java 的压缩包格式（不是安装程序，可以是 OpenJDK）并将其解压，然后从 <a href='https://hmcl.huangyuhui.net/download/'>HMCL 官方网站</a>或<a href='https://github.com/huanghongxun/HMCL/releases/'>官方 Github 发行版</a>上下载 JAR 格式 的 HMCL，再从本仓库的 Github Pages 下载最新版的 HHML 脚本：<br>Windows 中文版：<a href='/HHML/Windows/HHML-SC-GB2312.bat'>HHML-SC-GB2312.bat</a></br>Windows 英文版：<a href='/HHML/Windows/HHML-EN.bat'>HHML-EN.bat</a><br>如果你使用非简体中文版 Windows 或启用了 UTF-8 全球语言支持，请选择英文版，否则会出现乱码甚至报错！</li>\
     <li>将脚本、解压出来的 Java 文件夹（可同时放置多个版本）和 HMCL 放到同一目录下（可以位于硬盘或U盘中）</li>\
     <li>运行 HHML 脚本，脚本会自动搜索当前目录下的 Java 并挑选出最新版本来启动 JAR 格式的 HMCL，很快HMCL 的界面就会出现，但有时也会自动下载运行时（JavaFX），它将其放到了系统用户目录下，更换电脑后要重新下载，非常麻烦。所以 HHML 脚本会将其备份到当前目录下以备更换电脑时还原，节省了下载的时间。</li>\
     <li>在 HHML 的帮助下，HMCL 不仅能自动搜索安装在系统中的 Java 还能自动搜索位于当前目录下的 Java。这意味着你不再需要手动为非安装版 Java 添加自定义路径（不像 PCL2，HMCL 只能添加一个自定义 Java 路径）</li>\
