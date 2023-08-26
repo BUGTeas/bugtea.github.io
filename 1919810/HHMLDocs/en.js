@@ -11,7 +11,7 @@ loadInfo = "<h1>Hello HMCL! Launcher (HHML) Official document</h1>\
     <li>put the HMCL JAR file and HHML script and unzipped java archive (multiple different versions can be placed) in the same directory (can be on a flash drive or hard disk)</li>\
     <li>run the HHML script, the script will secrch all Java archive in current directory automatic and pick the latest Java version to launch HMCL JAR file, soon the interface of HMCL will appear, but sometime also it's download runtimes (JavaFX) automatic, it puts it in the system by default, it is very troublesome to download it again after changing computers. So HHML can back it up to current directory in preparation for restoring to the system on another computer, saving time to download again.</li>\
     <li>With the help of HHML script, the HMCL not only can search installed Java in the system automatic, but also can search unzipped Java in current directory automatic. This mains you don't need to manually add a non-installed Java version path to custom path (unlike PCL2, only one custom Java path can be added in HMCL)</li>\
-    <li>After that, HMCL should be launched via the HHML script instead of opening the JAR file directly. To speed up the game startup, you can enable \"Do not check game integrity\" option in advanced settings, because the intergrity check before the game launch requires a large amount of data to be copied to the system disk, if the game is on a flash disk, it will take a lot of time to complete this step.</li>\
+    <li>After that, you should launch HMCL via the HHML script instead of opening the JAR file directly. To speed up the game startup, you can enable \"Do not check game integrity\" option in advanced settings, because the intergrity check before the game launch requires a large amount of data to be copied to the system disk, if the game is on a flash disk, it will take a lot of time to complete this step.</li>\
 </ul>\
 <h2>Advenced usage</h2>\
 <h3>Custom Java path (relative path can be used)</h3>\
@@ -32,7 +32,7 @@ use64java=1\
 </textarea>\
 <h3>Auto backup/restore/remove configuration</h3>\
 <p>Note: runtime here refers to AuthLib-Injector (external login dependencies) and Java FX (graphic interface dependencies), while global config here refers to config.json (user license) and accounts.json (global user list).</p>\
-<p>auto backup/restore/remove the runtime and the globel configuration. They are all located at user directory in system, since it's all on the hard drive, and don't have to change computers, is it still need to backup?</p>\
+<p>If you want to use HHML script in hard disk, you definitely don't want HHML auto backup/restore/remove the runtime and the globel configuration. They are all located at user directory in system, since it's all on the hard drive, and don't have to change computers, is it still need to backup?</p>\
 <p>So I provided some option about backup/restore/remove (they all parameter is 1): </p>\
 <p><b>Restore runtime</b><br>Configuration name: restoreRunTime<br>Parameter: </p>\
 <textarea>\
