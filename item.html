@@ -9,6 +9,8 @@
             margin:0px;
             background-color:#eee;
             font-family:sans-serif;
+            position: absolute;
+            width: 100%;
         }
         header{
             background-color: #fff;
@@ -84,18 +86,17 @@
         main{
             background-color: #fff;
             max-width: 1080px;
-            margin-left: 50%;
+            margin-left: 0px;
             margin-top: 58px;
+            transform: translate(0px, 0px);;
             position: relative;
             width: calc(100% - 40px);
-            transform: translate(-50%, 0px);
-            padding: 10px;
+            padding: 20px;
             padding-bottom: 100px;
             word-break: break-word;
-            transition-property: all;
-            transition-duration: 0.3s;
         }
         main p, main ul{
+            margin: 15px 0px;
             font-size: 18px;
             line-height: 28px;
         }
@@ -114,6 +115,14 @@
             transition-property: all;
             transition-duration:0.3s;
         }
+        @media only screen and (min-width: 1140px){
+            main{
+                margin-left: 50%;
+                transform: translate(-50%, 0px);
+                transition-property: all;
+                transition-duration: 0.3s;
+            }
+        }
         @media only screen and (min-width: 1320px){
             #headBox{
                 max-width: 1290px;
@@ -122,7 +131,7 @@
                 width:0px;
             }
             nav{
-                left: calc(50% - 550px - 90px);
+                left: calc(50% - 560px - 90px);
                 height: calc(100% - 58px);
                 top: 58px;
                 width: 180px;
@@ -137,10 +146,12 @@
                 width: 180px;
             }
             main{
-            transform:translate(calc(-50% + 90px), 0px);
+                transform: translate(calc(-50% + 90px), 0px);
             }
         }
-        img{
+        main img{
+            display: block;
+            margin: 15px 0px;
             max-width:100%;
             box-shadow:0px 0px 5px #aaa;
         }
@@ -149,9 +160,15 @@
             box-shadow:0px 0px 5px #aaa;
             border:0px;
         }
+        h1,h2,h3,h4{
+            margin:0px;
+            padding-top: 20px;
+            margin-top: 20px;
+        }
         h1{
-            margin:10px 0px;
-            font-weight:300;
+            margin: 0px;
+            padding-top: 10px;
+            font-weight: 300;
         }
         h2{
             font-size:26px;
@@ -225,11 +242,11 @@
             }
             0%{
                 width:0px;
-                left: calc(50% - 550px);
+                left: calc(50% - 560px);
             }
             100%{
                 width:180px;
-                left: calc(50% - 550px - 90px);
+                left: calc(50% - 560px - 90px);
             }
         }
     </div>
@@ -251,12 +268,7 @@
 		function autoScroll(scrollTo){
 			if(document.documentElement.scrollTop != scrollTo){
 				autoScrollId ++;
-				autoScrSet = {
-                    //平滑距离（涉及等差数列总和计算）
-					smoothDistance:25 * (1 + 25) / 2,
-                    //每滑动一次的距离
-					oneFremeDistance:25
-				}
+                autoScrDist = 1;
 				//console.log(String((document.documentElement.scrollTop - scrollTo) / 25).split(".")[0])
 				if(scrollTo + document.documentElement.clientHeight < document.body.clientHeight) autoScrollProcess(autoScrollId, scrollTo);
 				else autoScrollProcess(autoScrollId, document.body.clientHeight - document.documentElement.clientHeight);
@@ -267,16 +279,16 @@
 			if(id == autoScrollId) {
 				//向上滑动或向下
 				var nowScrollTop = document.documentElement.scrollTop;
-				if(scrollTo < nowScrollTop) document.documentElement.scrollTop = nowScrollTop - autoScrSet.oneFremeDistance;
-				else document.documentElement.scrollTop = nowScrollTop + autoScrSet.oneFremeDistance;
-				//线性平滑减速
+				if(scrollTo < nowScrollTop) document.documentElement.scrollTop = nowScrollTop - autoScrDist;
+				else document.documentElement.scrollTop = nowScrollTop + autoScrDist;
+				//线性平滑加减速
 				var afterScrollTop = document.documentElement.scrollTop;
-                if(autoScrSet.oneFremeDistance>1){
-                    if(nowScrollTop < afterScrollTop & scrollTo - afterScrollTop <= autoScrSet.smoothDistance) autoScrSet.oneFremeDistance --;
-                    else if(nowScrollTop > afterScrollTop & afterScrollTop - scrollTo <= autoScrSet.smoothDistance) autoScrSet.oneFremeDistance --;
-                }
+                if(autoScrDist > 1 & nowScrollTop < afterScrollTop & scrollTo - afterScrollTop <= autoScrDist * (1 + autoScrDist) / 2) autoScrDist -= 2;
+                else if(autoScrDist > 1 & nowScrollTop > afterScrollTop & afterScrollTop - scrollTo <= autoScrDist * (1 + autoScrDist) / 2) autoScrDist -= 2;
+                else autoScrDist += 2;
+                //console.log(autoScrDist)
 				//一帧滑动后执行下一帧
-				if(/*上滑*/document.documentElement.scrollTop - autoScrSet.oneFremeDistance > scrollTo | /*下滑*/document.documentElement.scrollTop + autoScrSet.oneFremeDistance < scrollTo) {
+				if(/*上滑*/document.documentElement.scrollTop - autoScrDist > scrollTo | /*下滑*/document.documentElement.scrollTop + autoScrDist < scrollTo) {
 					setTimeout(function(){autoScrollProcess(id, scrollTo)}, 1);
 				} else document.documentElement.scrollTop = scrollTo;
 			}
@@ -320,6 +332,10 @@
         function loadIndex(){
             if(document.body.clientHeight != lastHeight){
                 lastHeight = document.body.clientHeight;
+                var iFrameList = mainBox.getElementsByTagName("iframe");
+                for (i = 0; i < iFrameList.length; i ++){
+                    iFrameList[i].style.height = (iFrameList[i].clientWidth / 16 * 10) + "px"
+                }
                 document.getElementById("toTop").onclick = scrollTo;
                 var eleList = mainBox.children;
                 var n = 0;
@@ -333,13 +349,9 @@
                             document.getElementById("navBox").appendChild(linkBtn);
                         }
                         //设置索引按钮的目标位置
-                        document.getElementById("navBox").children[n].setAttribute("top", eleList[i].offsetTop - 20);
+                        document.getElementById("navBox").children[n].setAttribute("top", eleList[i].offsetTop - 0);
                         n ++;
                     }
-                }
-                var iFrameList = mainBox.getElementsByTagName("iframe");
-                for (i = 0; i < iFrameList.length; i ++){
-                    iFrameList[i].style.height = (iFrameList[i].clientWidth / 16 * 10) + "px"
                 }
             }
             setTimeout(loadIndex,100);
