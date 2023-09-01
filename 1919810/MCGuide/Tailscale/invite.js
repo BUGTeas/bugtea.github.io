@@ -1,1 +1,0 @@
-loadInfo = "<h1>Tailscale - BUGTea 服务器设备分享</h1><p>分享链接：<a href='https://login.tailscale.com/admin/invite/tPknHi4tacH'>showLink</a></p><p>有效期至：2023/9/15</p><p>如果链接失效，请通过 QQ 号联系我：757169500 或 2896431618"
