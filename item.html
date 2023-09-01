@@ -144,6 +144,11 @@
             max-width:100%;
             box-shadow:0px 0px 5px #aaa;
         }
+        iframe{
+            width:100%;
+            box-shadow:0px 0px 5px #aaa;
+            border:0px;
+        }
         h1{
             margin:10px 0px;
             font-weight:300;
@@ -182,7 +187,7 @@
             <div id="headBtn">
                 <svg onclick="showNav()" style="height:28px;width:28px;padding:5px;fill:rgb(102, 102, 102)" focusable="false" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"></path></svg>
             </div>
-            <div id="headText">标题内容</div>
+            <div id="headText">BugTea 个人页面</div>
         </div>
     </header>
     <nav style="transition-duration:0.3s;">
@@ -332,8 +337,12 @@
                         n ++;
                     }
                 }
+                var iFrameList = mainBox.getElementsByTagName("iframe");
+                for (i = 0; i < iFrameList.length; i ++){
+                    iFrameList[i].style.height = (iFrameList[i].clientWidth / 16 * 10) + "px"
+                }
             }
-            setTimeout(loadIndex,500);
+            setTimeout(loadIndex,100);
         }
         
         
@@ -366,11 +375,13 @@
         if(proFile){
             //获取文章脚本的所在路径
             var srcFnt = "";
+            if(proFile.substring(proFile.length - 3,proFile.length) !=  ".js" & proFile[proFile.length - 1] != "/") proFile +=  "/"
             var srcList = proFile.split("/");
             for (i = 0; i < srcList.length - 1; i ++){
                 srcFnt += srcList[i] + "/";
             }
             var Scr = loadJS(proFile + "?" + Math.random());
+            notFoundError = "<h1>错误</h1><p>服务器异常或文章已被删除。</p>";
             Scr.onload = function(){
                 var checkInfo = function(){
                     if(loadInfo){
@@ -393,7 +404,7 @@
                                 linkList[i].href = "item.html?proFile=" + srcFnt + linkList[i].getAttribute("href").substring(8,linkList[i].getAttribute("href").length);
                             }
                         }
-                        //666
+                        //将textarea转换为CodeMirror
                         var txtAreaLst = [];
                         var textAreaList = mainBox.getElementsByTagName("textarea");
                         for (i = 0; i < textAreaList.length; i ++){
@@ -410,14 +421,16 @@
                         //设置标题
                         document.title = mainBox.getElementsByTagName("h1")[0].innerHTML;
                         document.getElementById("headText").innerHTML = document.title;
-                        document.body.appendChild(mainBox);
-                    } else setTimeout(function(){checkInfo()},0);
+                    } else {
+                        if(mainBox.innerHTML != notFoundError) mainBox.innerHTML = notFoundError
+                        setTimeout(function(){checkInfo()},0);
+                    }
                 }
                 checkInfo();
                 //else mainBox.innerHTML = "<h1>错误</h1><p>文章已被禁用。</p>";
             }
             Scr.onerror = function(){
-                mainBox.innerHTML = "<h1>错误</h1><p>服务器异常或文章已被删除。</p>";
+                mainBox.innerHTML = notFoundError
             }
         } else mainBox.innerHTML = "<h1>错误</h1><p>请检查链接是否正确。</p>";
 
