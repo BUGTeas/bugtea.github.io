@@ -1,1 +1,1 @@
-
+loadInfo = "<h1>Tailscale - BugTea 服务器设备分享（临时链接，逾时失效）</h1><p>分享链接：<a href='https://login.tailscale.com/admin/invite/tPknHi4tacH'>showLink</a></p><p>有效期至：2023/9/14</p><p>如果链接失效，可以在内部群里联系我：“BugTea二号”(腐竹和技术支持)，或通过 QQ 号：757169500(∏ Ι ∏ Κ ∑ Σ) 或 2896431618(BugTea汐茶)"
