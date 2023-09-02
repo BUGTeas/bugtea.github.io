@@ -18,8 +18,9 @@
             padding: 5px;
             position:fixed;
             top:0px;
-            width:calc(100% - 10px);
             z-index: 3;
+            height: 48px;
+            overflow: hidden;
         }
         #headBox{
             max-width: 1110px;
@@ -33,6 +34,7 @@
         #headBtn{
             font-size:0px;
             width:38px;
+            height:38px;
             margin:5px;
             transition-property: all;
             transition-duration: 0.3s;
@@ -199,7 +201,7 @@
         }
     </style>
 <body>
-    <header>
+    <header style="width:calc(100% - 10px)">
         <div id="headBox">
             <div id="headBtn">
                 <svg onclick="showNav()" style="height:28px;width:28px;padding:5px;fill:rgb(102, 102, 102)" focusable="false" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"></path></svg>
@@ -253,6 +255,11 @@
     <script type="text/javascript">
         
         mainBox = document.body.children[2];
+        headerTextBox = document.getElementById("headText");
+        headerBreakIndex = [];
+        headerEllipsisText = "...";
+
+
         //加载外置脚本
         function loadJS(path){
             var Script = document.createElement("script");
@@ -291,7 +298,7 @@
                 if(autoScrDist > 1 & autoScrTop < autoScrTgt & autoScrTgt - autoScrTop <= autoScrDist * (1 + autoScrDist) / 2) autoScrDist -= 2;
                 else if(autoScrDist > 1 & autoScrTop > autoScrTgt & autoScrTop - autoScrTgt <= autoScrDist * (1 + autoScrDist) / 2) autoScrDist -= 2;
                 else autoScrDist += 2;
-                console.log(autoScrDist + " " + autoScrTop + " " + autoScrTgt)
+                //console.log(autoScrDist + " " + autoScrTop + " " + autoScrTgt)
 				//一帧滑动后执行下一帧
 				if(/*上滑*/autoScrTop - autoScrDist > autoScrTgt | /*下滑*/autoScrTop + autoScrDist < autoScrTgt) {
 					setTimeout(function(){autoScrollProcess(id)}, 1);
@@ -326,6 +333,7 @@
                     maxWidth = false;
                 }
             }
+            headerEllipsis("none");
         }
         //索引按钮点击后
         function scrollTo(){
@@ -441,8 +449,25 @@
                             })
                         }
                         //设置标题
-                        document.title = mainBox.getElementsByTagName("h1")[0].innerHTML;
-                        document.getElementById("headText").innerHTML = document.title;
+                        headerText = mainBox.getElementsByTagName("h1")[0].innerHTML;
+                        document.title = headerText;
+                        //获取省略号启用条件
+                        //宽度根据文本宽度自适应
+                        document.body.children[0].style.width = "auto";
+                        //获取省略号宽度
+                        headerTextBox.innerHTML = headerEllipsisText
+                        ellipsisWidth = headerTextBox.clientWidth
+                        headerTextBox.innerHTML = ""
+                        //每增加一个字符获取一次文本加上省略号的宽度
+                        for (i = 0; i < headerText.length; i ++){
+                            headerTextBox.innerHTML += headerText[i];
+                            headerBreakIndex[i] = headerTextBox.clientWidth + ellipsisWidth
+                        }
+                        //恢复原宽度
+                        document.body.children[0].style.width = "calc(100% - 10px)"
+                        //检测并在条件满足时启用省略号
+                        headerEllipsis("none");
+                        
                     } else {
                         if(mainBox.innerHTML != notFoundError) mainBox.innerHTML = notFoundError
                         setTimeout(function(){checkInfo()},0);
@@ -455,6 +480,28 @@
                 mainBox.innerHTML = notFoundError
             }
         } else mainBox.innerHTML = "<h1>错误</h1><p>请检查链接是否正确。</p>";
+
+
+        //检测并在条件满足时启用省略号
+        function headerEllipsis(cnt){
+            if(cnt == "none") {
+                cnt = headerBreakIndex.length - 1;
+            }
+            //console.log(document.getElementById("headText").clientWidth +""+ headerBreakIndex[cnt])
+            //逐个字符检测文本宽度
+            if(headerTextBox.clientWidth < headerBreakIndex[cnt]){
+                if(cnt != 0){
+                    cnt --
+                    headerEllipsis(cnt);
+                }
+            //页面宽度小于文本宽度，启用省略号
+            } else if(cnt != headerBreakIndex.length - 1){
+                if(headerTextBox.innerHTML != headerText.substring(0,cnt) + headerEllipsisText) headerTextBox.innerHTML = headerText.substring(0,cnt) + headerEllipsisText;
+            //页面宽度大于文本宽度
+            } else {
+                if(headerTextBox.innerHTML != headerText) headerTextBox.innerHTML = headerText
+            }
+        }
 
 
         //指示滚动位置所处的板块对应的导航栏项
