@@ -209,7 +209,7 @@
     </header>
     <nav style="transition-duration:0.3s;">
         <div id="navBox"></div>
-        <div id="toTop" top="0">↑返回顶部</div>
+        <div id="toTop" onclick="autoScroll(0)">↑返回顶部</div>
         <!--<img src="../java8/2disk.png"/>-->
     </nav>
     <main></main>
@@ -262,35 +262,40 @@
             return Script;
         }
 
-
+        //获取滚动位置（浏览器兼容性）
+        function winScrTop(){
+            return document.documentElement.scrollTop || document.body.scrollTop || window.pageYOffset;
+        }
 		//启动页面滚动动画
 		autoScrollId = 0;
 		function autoScroll(scrollTo){
 			if(document.documentElement.scrollTop != scrollTo){
 				autoScrollId ++;
                 autoScrDist = 1;
+                autoScrTop = winScrTop();
 				//console.log(String((document.documentElement.scrollTop - scrollTo) / 25).split(".")[0])
-				if(scrollTo + document.documentElement.clientHeight < document.body.clientHeight) autoScrollProcess(autoScrollId, scrollTo);
-				else autoScrollProcess(autoScrollId, document.body.clientHeight - document.documentElement.clientHeight);
+				if(scrollTo + document.documentElement.clientHeight < document.body.clientHeight) autoScrTgt = scrollTo;
+				else autoScrTgt = document.body.clientHeight - document.documentElement.clientHeight
+                autoScrollProcess(autoScrollId);
 			}
 		}
 		//页面滚动动画程序
-		function autoScrollProcess(id, scrollTo){
+		function autoScrollProcess(id){
 			if(id == autoScrollId) {
 				//向上滑动或向下
-				var nowScrollTop = document.documentElement.scrollTop;
-				if(scrollTo < nowScrollTop) document.documentElement.scrollTop = nowScrollTop - autoScrDist;
-				else document.documentElement.scrollTop = nowScrollTop + autoScrDist;
+				if(autoScrTgt < autoScrTop) autoScrTop = autoScrTop - autoScrDist;
+				else autoScrTop = autoScrTop + autoScrDist;
+                window.scroll(0,autoScrTop);
 				//线性平滑加减速
-				var afterScrollTop = document.documentElement.scrollTop;
-                if(autoScrDist > 1 & nowScrollTop < afterScrollTop & scrollTo - afterScrollTop <= autoScrDist * (1 + autoScrDist) / 2) autoScrDist -= 2;
-                else if(autoScrDist > 1 & nowScrollTop > afterScrollTop & afterScrollTop - scrollTo <= autoScrDist * (1 + autoScrDist) / 2) autoScrDist -= 2;
+				var afterScrollTop = winScrTop();
+                if(autoScrDist > 1 & autoScrTop < autoScrTgt & autoScrTgt - autoScrTop <= autoScrDist * (1 + autoScrDist) / 2) autoScrDist -= 2;
+                else if(autoScrDist > 1 & autoScrTop > autoScrTgt & autoScrTop - autoScrTgt <= autoScrDist * (1 + autoScrDist) / 2) autoScrDist -= 2;
                 else autoScrDist += 2;
-                //console.log(autoScrDist)
+                console.log(autoScrDist + " " + autoScrTop + " " + autoScrTgt)
 				//一帧滑动后执行下一帧
-				if(/*上滑*/document.documentElement.scrollTop - autoScrDist > scrollTo | /*下滑*/document.documentElement.scrollTop + autoScrDist < scrollTo) {
-					setTimeout(function(){autoScrollProcess(id, scrollTo)}, 1);
-				} else document.documentElement.scrollTop = scrollTo;
+				if(/*上滑*/autoScrTop - autoScrDist > autoScrTgt | /*下滑*/autoScrTop + autoScrDist < autoScrTgt) {
+					setTimeout(function(){autoScrollProcess(id)}, 1);
+				} else window.scroll(0,autoScrTgt);
 			}
 		}
 		//窗口大小调整
@@ -329,6 +334,7 @@
         }
         //加载索引
         var lastHeight = 0;
+        var subTitleIndex = [];
         function loadIndex(){
             if(document.body.clientHeight != lastHeight){
                 lastHeight = document.body.clientHeight;
@@ -336,12 +342,12 @@
                 for (i = 0; i < iFrameList.length; i ++){
                     iFrameList[i].style.height = (iFrameList[i].clientWidth / 16 * 10) + "px"
                 }
-                document.getElementById("toTop").onclick = scrollTo;
                 var eleList = mainBox.children;
                 var n = 0;
                 for (i = 0; i < eleList.length; i ++){
                     if (eleList[i].tagName == "H3"){
                         //当索引按钮不存在时添加一个
+                        subTitleIndex[n] = eleList[i];
                         if (!document.getElementById("navBox").children[n]){
                             var linkBtn = document.createElement("div");
                             linkBtn.innerHTML = eleList[i].innerHTML;
@@ -356,6 +362,7 @@
             }
             setTimeout(loadIndex,100);
         }
+        loadIndex();
         
         
         //窄宽度导航栏形态
@@ -375,6 +382,7 @@
         }
         
 
+        //加载URL参数
         proFile = loadInfo = false;
         var loadParam = window.location.href.split("?");
         if (loadParam[1]) {
@@ -384,6 +392,8 @@
                 eval (par[0] + " = par[1]");
             }
         }
+
+
         if(proFile){
             //获取文章脚本的所在路径
             var srcFnt = "";
@@ -447,22 +457,18 @@
         } else mainBox.innerHTML = "<h1>错误</h1><p>请检查链接是否正确。</p>";
 
 
-        
-        window.onload = function(){
-            loadIndex();
-            //指示滚动位置所处的板块对应的导航栏项
-            var listin = false;
-            window.onscroll = function(){
-                var eleList = mainBox.getElementsByTagName("h3");
-                for(i = eleList.length - 1; i > -1; i --){
-                    if(document.documentElement.scrollTop >= eleList[i].offsetTop && !listin){
-                        document.getElementById("navBox").children[i].style.backgroundColor = "#ddd";
-                        listin = true;
-                    } else document.getElementById("navBox").children[i].style = "";
-                }
-                listin = false;
+        //指示滚动位置所处的板块对应的导航栏项
+        var listin = false;
+        window.onscroll = function(){
+            for(i = subTitleIndex.length - 1; i > -1; i --){
+                if(winScrTop() >= subTitleIndex[i].offsetTop && !listin){
+                    document.getElementById("navBox").children[i].style.backgroundColor = "#ddd";
+                    listin = true;
+                } else document.getElementById("navBox").children[i].style = "";
             }
+            listin = false;
         }
+
         
         //触屏导航栏展开时左划隐藏
         document.body.children[1].ontouchstart = function(e){
