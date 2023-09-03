@@ -51,6 +51,7 @@
             flex:1;
             overflow: hidden;
             white-space: nowrap;
+            text-overflow: ellipsis;
             line-height:48px;
             font-size:18px;
             margin-left:5px;
@@ -152,8 +153,6 @@
             }
         }
         main img{
-            display: block;
-            margin: 15px 0px;
             max-width:100%;
             box-shadow:0px 0px 5px #aaa;
         }
@@ -256,8 +255,8 @@
         
         mainBox = document.body.children[2];
         headerTextBox = document.getElementById("headText");
-        headerBreakIndex = [];
-        headerEllipsisText = "...";
+        //headerBreakIndex = [];
+        //headerEllipsisText = "...";
 
 
         //加载外置脚本
@@ -333,7 +332,7 @@
                     maxWidth = false;
                 }
             }
-            headerEllipsis("none");
+            //headerEllipsis("none");
         }
         //索引按钮点击后
         function scrollTo(){
@@ -346,9 +345,18 @@
         function loadIndex(){
             if(document.body.clientHeight != lastHeight){
                 lastHeight = document.body.clientHeight;
+                //调整iframe嵌套缩放比为16:10
                 var iFrameList = mainBox.getElementsByTagName("iframe");
                 for (i = 0; i < iFrameList.length; i ++){
                     iFrameList[i].style.height = (iFrameList[i].clientWidth / 16 * 10) + "px"
+                }
+                //按照缩放尺寸调整图片标注字体大小
+                var imgTipsList = mainBox.getElementsByClassName("imgTips");
+                for (j = 0; j < imgTipsList.length; j ++){
+                    var tipTxtList = imgTipsList[j].getElementsByTagName("div");
+                    for (k = 0; k < tipTxtList.length; k ++){
+                        tipTxtList[k].style.fontSize = (imgTipsList[j].clientHeight * Number(tipTxtList[k].getAttribute("fontsize"))) + "px";
+                    }
                 }
                 var eleList = mainBox.children;
                 var n = 0;
@@ -423,6 +431,15 @@
                                 imgList[i].src = srcFnt + imgList[i].getAttribute("src");
                             }
                         }
+                        var imgTipsList = mainBox.getElementsByClassName("imgTips");
+                        for (j = 0; j < imgTipsList.length; j ++){
+                            imgTipsList[j].children[0].style.maxWidth = "none";
+                            var tipTxtList = imgTipsList[j].getElementsByTagName("div");
+                            for (k = 0; k < tipTxtList.length; k ++){
+                                tipTxtList[k].setAttribute("fontsize",window.getComputedStyle(tipTxtList[k]).fontSize.split("px")[0] / imgTipsList[j].clientHeight)
+                            }
+                            imgTipsList[j].children[0].style.maxWidth = "100%";
+                        }
                         //将内容为showLink的链接按钮内容改为其链接，并将./开头路径的链接设置为文章脚本的所在路径
                         var linkList = mainBox.getElementsByTagName("a");
                         for (i = 0; i < linkList.length; i ++){
@@ -451,7 +468,8 @@
                         //设置标题
                         headerText = mainBox.getElementsByTagName("h1")[0].innerHTML;
                         document.title = headerText;
-                        //获取省略号启用条件
+                        //获取省略号启用条件（已弃用）
+                        /*
                         //宽度根据文本宽度自适应
                         document.body.children[0].style.width = "auto";
                         //获取省略号宽度
@@ -467,6 +485,8 @@
                         document.body.children[0].style.width = "calc(100% - 10px)"
                         //检测并在条件满足时启用省略号
                         headerEllipsis("none");
+                        */
+                        headerTextBox.innerHTML = headerText;
                         
                     } else {
                         if(mainBox.innerHTML != notFoundError) mainBox.innerHTML = notFoundError
@@ -482,8 +502,8 @@
         } else mainBox.innerHTML = "<h1>错误</h1><p>请检查链接是否正确。</p>";
 
 
-        //检测并在条件满足时启用省略号
-        function headerEllipsis(cnt){
+        //检测并在条件满足时启用省略号（已弃用）
+        /*function headerEllipsis(cnt){
             if(cnt == "none") {
                 cnt = headerBreakIndex.length - 1;
             }
@@ -501,7 +521,7 @@
             } else {
                 if(headerTextBox.innerHTML != headerText) headerTextBox.innerHTML = headerText
             }
-        }
+        }*/
 
 
         //指示滚动位置所处的板块对应的导航栏项
