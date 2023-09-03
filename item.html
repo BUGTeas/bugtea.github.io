@@ -341,10 +341,11 @@
         }
         //加载索引
         var lastHeight = 0;
+        var pageLoaded = false;
         var subTitleIndex = [];
+        var imgTipDftSize = [];
         function loadIndex(){
             if(document.body.clientHeight != lastHeight){
-                lastHeight = document.body.clientHeight;
                 //调整iframe嵌套缩放比为16:10
                 var iFrameList = mainBox.getElementsByTagName("iframe");
                 for (i = 0; i < iFrameList.length; i ++){
@@ -353,14 +354,24 @@
                 //按照缩放尺寸调整图片标注字体大小
                 var imgTipsList = mainBox.getElementsByClassName("imgTips");
                 for (j = 0; j < imgTipsList.length; j ++){
+                    imgTipsList[j].children[0].style.maxWidth = "none";
                     var tipTxtList = imgTipsList[j].getElementsByTagName("div");
+                    if(pageLoaded) imgTipDftSize[j] = [];
+                    var imgTipDftPpt = [];
                     for (k = 0; k < tipTxtList.length; k ++){
-                        tipTxtList[k].style.fontSize = (imgTipsList[j].clientHeight * Number(tipTxtList[k].getAttribute("fontsize"))) + "px";
+                        if(pageLoaded) imgTipDftSize[j][k] = Number(window.getComputedStyle(tipTxtList[k]).fontSize.split("px")[0]);
+                        imgTipDftPpt[k] = imgTipDftSize[j][k] / imgTipsList[j].clientHeight;
+                    }
+                    imgTipsList[j].children[0].style.maxWidth = "100%";
+                    for (k = 0; k < tipTxtList.length; k ++){
+                        tipTxtList[k].style.fontSize = (imgTipsList[j].clientHeight * imgTipDftPpt[k]) + "px";
                     }
                 }
+                pageLoaded = false;
                 var eleList = mainBox.children;
                 var n = 0;
                 for (i = 0; i < eleList.length; i ++){
+
                     if (eleList[i].tagName == "H3"){
                         //当索引按钮不存在时添加一个
                         subTitleIndex[n] = eleList[i];
@@ -375,6 +386,7 @@
                         n ++;
                     }
                 }
+                lastHeight = document.body.clientHeight;
             }
             setTimeout(loadIndex,100);
         }
@@ -431,15 +443,6 @@
                                 imgList[i].src = srcFnt + imgList[i].getAttribute("src");
                             }
                         }
-                        var imgTipsList = mainBox.getElementsByClassName("imgTips");
-                        for (j = 0; j < imgTipsList.length; j ++){
-                            imgTipsList[j].children[0].style.maxWidth = "none";
-                            var tipTxtList = imgTipsList[j].getElementsByTagName("div");
-                            for (k = 0; k < tipTxtList.length; k ++){
-                                tipTxtList[k].setAttribute("fontsize",window.getComputedStyle(tipTxtList[k]).fontSize.split("px")[0] / imgTipsList[j].clientHeight)
-                            }
-                            imgTipsList[j].children[0].style.maxWidth = "100%";
-                        }
                         //将内容为showLink的链接按钮内容改为其链接，并将./开头路径的链接设置为文章脚本的所在路径
                         var linkList = mainBox.getElementsByTagName("a");
                         for (i = 0; i < linkList.length; i ++){
@@ -466,6 +469,7 @@
                             })
                         }
                         //设置标题
+                        pageLoaded = true;
                         headerText = mainBox.getElementsByTagName("h1")[0].innerHTML;
                         document.title = headerText;
                         //获取省略号启用条件（已弃用）
