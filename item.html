@@ -82,6 +82,9 @@
         #navBox div:hover, #toTop:hover{
             background:#eee;
         }
+        #navBox .activityIndex{
+            background:#ddd;
+        }
         #toTop{
             overflow: hidden;
             white-space: nowrap;
@@ -166,6 +169,7 @@
             margin:0px;
             padding-top: 20px;
             margin-top: 20px;
+            margin-bottom: 15px;
         }
         h1{
             margin: 0px;
@@ -536,9 +540,9 @@
         window.onscroll = function(){
             for(i = subTitleIndex.length - 1; i > -1; i --){
                 if(winScrTop() >= subTitleIndex[i].offsetTop && !listin){
-                    document.getElementById("navBox").children[i].style.backgroundColor = "#ddd";
+                    document.getElementById("navBox").children[i].classList.add("activityIndex");
                     listin = true;
-                } else document.getElementById("navBox").children[i].style = "";
+                } else document.getElementById("navBox").children[i].classList.remove("activityIndex");
             }
             listin = false;
         }
