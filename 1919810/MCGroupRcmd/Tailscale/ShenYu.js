@@ -1,1 +1,1 @@
-loadInfo = "<h1>Tailscale - ShenYu 服务器设备分享（临时链接，逾时失效）</h1><p>分享链接：<a href='https://login.tailscale.com/admin/invite/rjVv9uwLW9e'>showLink</a></p><p>有效期至：2023/9/29</p><p>如果链接失效，可以在内部群里联系我：“南太平洋社畜-阿汤”(腐竹)或“BugTea二号”(技术支持)"
+loadInfo = "<h1>Tailscale - ShenYu 服务器设备分享（临时链接，逾时失效）</h1><p>分享链接：<a href='https://login.tailscale.com/admin/invite/rjVv9uwLW9e'>showLink</a></p><p>有效期至：2023/9/29</p><p>如果链接失效，可以在内部群里联系我：“ShenYu_海鲜”(腐竹)或“BugTea二号”(技术支持)"
