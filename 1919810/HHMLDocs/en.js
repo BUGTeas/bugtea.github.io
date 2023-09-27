@@ -39,7 +39,7 @@ use64java=1\
 </textarea>\
 <p>Default parameter: 0</p>\
 <h3>Auto backup/restore/remove configuration</h3>\
-<p>Note: runtime here refers to AuthLib-Injector (external login dependencies) and Java FX (graphic interface dependencies), while global config here refers to config.json (user license) and accounts.json (global user list).</p>\
+<p>Note: runtime here refers to AuthLib-Injector (external login dependencies) and Java FX (graphic interface dependencies), while global config here refers to config.json (user license).</p>\
 <p>If you want to use HHML script in hard disk, you definitely don't want HHML auto backup/restore/remove the runtime and the globel configuration. They are all located at user directory in system, since it's all on the hard drive, and don't have to change computers, is it still need to backup?</p>\
 <p>So I provided some option about backup/restore/remove (they all parameter is 1): </p>\
 <p><b>Restore runtime</b><br>Configuration name: restoreRunTime<br>Parameter: </p>\
@@ -69,7 +69,7 @@ use64java=1\
 <p><b>Backup global config</b><br>Configuration name: backupGlobalConfig<br>Parameter: </p>\
 <textarea>\
 0: Never backup\n\
-1: If they already exist before launch, a pop-up window after the HMCL is closed allows the user to confirm whether to backup, otherwise the backup is automatically available\n\
+1: Will backup automatically if it is not exist before launch\n\
 2: Always backup without user confirm  (even if it already exists before launch)\
 </textarea>\
 <p><b>Remove global config</b><br>Configuration name: removeGlobalConfig<br>Parameter: </p>\
