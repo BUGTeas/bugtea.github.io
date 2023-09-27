@@ -1,17 +1,18 @@
 loadInfo = "<h1>Hello HMCL! Launcher (HHML) Official document</h1>\
 <p><a href='itemDir/en.js'>English</a> <a href='itemDir/cn.js'>简体中文</a> <a href='https://github.com/BUGTeas/HHML/'>GitHub</a></p>\
-<p>Latest version：3.5.3.229 Update 3 (Tested 3.5.5 can be use)</p>\
+<p>Latest version：3.5.3.229 Update 4 (Tested 3.5.5 can be use)</p>\
 <h3>HHML introduce</h3>\
 <p>Hello HMCL! Launcher（below referred to as HHML）is a command script (support Windows only now), look from the name, this is a launcher written for the launcher.</p>\
-<p>This script use to resolve the HMCL launcher (Hello Minecraft! Launcher) put some related config file and runtime to user directory in system, resulting in the need for reconfiguration on another system. The script will restore the downloaded runtime and global to user directory in system and back it up when exiting.</p>\
-<p>in addition, the HHML can also make HMCL detect and auto select Java under the current diredtory, needn't install or add manually</p>\
+<p>This script use to resolve the HMCL launcher (Hello Minecraft! Launcher) cannot search Java in current directory and automatically select Java in custom path. Though this script, you will never need to install Java to system, or add custom Java path manually again, only need to download a Java archive and unzip to launcher directory without installation.</p>\
+<p>in addition, the HHML can also resolve HMCL put some related config file and runtime to user directory in system, resulting in the need for reconfiguration on another system (for example, need accept the EULA again). The script will restore the downloaded runtime and global to user directory in system and back it up when exiting.</p>\
 <h2>Simple usage</h2>\
 <ul style='list-style-type:decimal'>\
-    <li>Download a Java archive (not the installer, can be OpenJDK) of the required version of the MC version you are playing and unzip it, and download latest version of HMCL in JAR format on the <a href='https://hmcl.huangyuhui.net/download/'>HMCL official webside</a> or the <a href='https://github.com/huanghongxun/HMCL/releases/'>official GitHub releases</a>, an download Latest HHML script from Github Pages：<br>Windows Chinese simplified editon: <a href='/HHML/Windows/HHML-SC-GB2312.bat'>HHML-SC-GB2312.bat</a></br>Windows English editon: <a href='/HHML/Windows/HHML-EN.bat'>HHML-EN.bat</a><br>if you using a non-Chinese simplified Windows or UTF-8 global language support has been enabled, please select the English edition, Otherwise garbled characters will appear, even cause errors!</li>\
+    <li>Download a Java archive (not the installer, can be OpenJDK) of the required version of the MC version you are playing and unzip it, and download latest version of HMCL in JAR format on the <a href='https://hmcl.huangyuhui.net/download/'>HMCL official webside</a> or the <a href='https://github.com/huanghongxun/HMCL/releases/'>official GitHub releases</a>, an download Latest HHML script from Github Pages：<br><br>Windows Chinese simplified editon: <a href='/HHML/Windows/HHML-SC-GB2312.bat'>HHML-SC-GB2312.bat</a></br>Windows English editon: <a href='/HHML/Windows/HHML-EN.bat'>HHML-EN.bat</a><br><br>if you using a non-Chinese simplified Windows or UTF-8 global language support has been enabled, please select the English edition, Otherwise garbled characters will appear, even cause errors!</li>\
     <li>put the HMCL JAR file and HHML script and unzipped java archive (multiple different versions can be placed, directory structure is not limit) in the same directory (can be on a flash drive or hard disk)</li>\
     <li>run the HHML script, the script will secrch all Java archive in current directory automatic and pick the latest Java version to launch HMCL JAR file, soon the interface of HMCL will appear, but sometime also it's download runtimes (JavaFX) automatic, it puts it in the system by default, it is very troublesome to download it again after changing computers. So HHML can back it up to current directory in preparation for restoring to the system on another computer, saving time to download again.</li>\
     <li>With the help of HHML script, the HMCL not only can search installed Java in the system automatic, but also can search unzipped Java in current directory automatic. This mains you don't need to manually add a non-installed Java version path to custom path (unlike PCL2, only one custom Java path can be added in HMCL)</li>\
     <li>After that, you should launch HMCL via the HHML script instead of opening the JAR file directly. To speed up the game startup, you can enable \"Do not check game integrity\" option in advanced settings, because the intergrity check before the game launch requires a large amount of data to be copied to the system disk, if the game is on a flash disk, it will take a lot of time to complete this step.</li>\
+    <li>If need store account data to current directory, please convert the account to portable account in \"Account List\", or you'll need sign in again on another device.</li>\
 </ul>\
 <h2>Advenced usage</h2>\
 <h3>Custom Java path (relative path can be used)</h3>\
@@ -111,4 +112,5 @@ use64java=1\
 <textarea>\
 verBlackList=1.8.0_272,17.0.1,11.0.2\
 </textarea>\
+<p>Note: Java version in exclusion list will not use to launch HMCL, and not visible in Java path of HMCL. If it's installed in system, the script still can exclude it, but it may bypass the exclusion list and be detected in HMCL.</p>\
 "

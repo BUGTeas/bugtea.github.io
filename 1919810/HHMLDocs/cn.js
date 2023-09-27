@@ -1,17 +1,18 @@
 loadInfo = "<h1>Hello HMCL! Launcher (HHML) 官方文档</h1>\
 <p><a href='itemDir/en.js'>English</a> <a href='itemDir/cn.js'>简体中文</a> <a href='https://github.com/BUGTeas/HHML/'>GitHub</a></p>\
-<p>最新版本：3.5.3.229 Update 3（经测试 3.5.5 可使用）</p>\
+<p>最新版本：3.5.3.229 Update 4（经测试 3.5.5 可使用）</p>\
 <h3>HHML 介绍</h3>\
 <p>Hello HMCL! Launcher（以下简称 HHML）是一个命令脚本（目前仅支持 Windows），从名称上看，它就是一个给启动器写的启动器，禁止套娃（</p>\
-<p>该脚本用于解决 HMCL 启动器（Hello Minecraft! Launcher）将相关配置文件和运行时放在系统用户目录下（Windows 下为“%userprofile%\\AppData\\Roaming.hmcl”），导致将其放在U盘中更换电脑后又要重新配置的问题。在 HMCL 启动前，脚本会将当前目录下的配置文件和已经下载的运行时还原到系统用户目录下，退出后再将其备份。</p>\
-<p>此外 HHML 脚本还能使得 HMCL 启动器检测当前目录下的Java并自动选择，无需安装或手动添加。</p>\
+<p>该脚本用于解决 HMCL 启动器（Hello Minecraft! Launcher）不支持在当前目录下搜索 Java 以及自动选择自定义的路径中的 Java，通过该脚本，你再也不需要将 Java 安装到系统中，或者手动添加自定义 Java 路径，只需要下载一个 Java 的免安装压缩包并解压到启动器目录下即可。</p>\
+<p>此外 HHML 脚本还能解决 HMCL 将相关配置文件和运行时放在系统用户目录下（Windows 下为“%userprofile%\\AppData\\Roaming.hmcl”），导致将其放在U盘中更换电脑后又要重新配置的问题（如需要重新接受用户许可）。在 HMCL 启动前，脚本会将当前目录下的配置文件和已经下载的运行时还原到系统用户目录下，退出后再将其备份。</p>\
 <h2>简单用法</h2>\
 <ul style='list-style-type:decimal'>\
-    <li>下载你游玩的MC版本所需的 Java 的压缩包格式（不是安装程序，可以是 OpenJDK）并将其解压，然后从 <a href='https://hmcl.huangyuhui.net/download/'>HMCL 官方网站</a>或<a href='https://github.com/huanghongxun/HMCL/releases/'>官方 Github 发行版</a>上下载 JAR 格式 的 HMCL，再从本仓库的 Github Pages 下载最新版的 HHML 脚本：<br>Windows 中文版：<a href='/HHML/Windows/HHML-SC-GB2312.bat'>HHML-SC-GB2312.bat</a></br>Windows 英文版：<a href='/HHML/Windows/HHML-EN.bat'>HHML-EN.bat</a><br>如果你使用非简体中文版 Windows 或启用了 UTF-8 全球语言支持，请选择英文版，否则会出现乱码甚至报错！</li>\
+    <li>下载你游玩的 MC 版本所需的 Java 的压缩包格式（不是安装程序，可以是 OpenJDK）并将其解压，然后从 <a href='https://hmcl.huangyuhui.net/download/'>HMCL 官方网站</a>或<a href='https://github.com/huanghongxun/HMCL/releases/'>官方 Github 发行版</a>上下载 JAR 格式 的 HMCL，再从本仓库的 Github Pages 下载最新版的 HHML 脚本：<br><br>Windows 中文版：<a href='/HHML/Windows/HHML-SC-GB2312.bat'>HHML-SC-GB2312.bat</a></br>Windows 英文版：<a href='/HHML/Windows/HHML-EN.bat'>HHML-EN.bat</a><br><br>如果你使用非简体中文版 Windows 或启用了 UTF-8 全球语言支持，请选择英文版，否则会出现乱码甚至报错！</li>\
     <li>将脚本、解压出来的 Java 文件夹（可同时放置多个版本，文件夹结构不限）和 HMCL 放到同一目录下（可以位于硬盘或U盘中）</li>\
     <li>运行 HHML 脚本，脚本会自动搜索当前目录下的 Java 并挑选出最新版本来启动 JAR 格式的 HMCL，很快 HMCL 的界面就会出现，但有时也会自动下载运行时（JavaFX），它将其放到了系统用户目录下，更换电脑后要重新下载，非常麻烦。所以 HHML 脚本会将其备份到当前目录下以备更换电脑时还原，节省了下载的时间。</li>\
     <li>在 HHML 的帮助下，HMCL 不仅能自动搜索安装在系统中的 Java 还能自动搜索位于当前目录下的 Java。这意味着你不再需要手动为非安装版 Java 添加自定义路径（不像 PCL2，HMCL 只能添加一个自定义 Java 路径）</li>\
     <li>此后，你应该使用 HHML 脚本来启动 HMCL，而不是直接打开 JAR 文件。为了提升启动速度，你可以在 HMCL 的高级设置中启用“不检查游戏完整性”选项，因为游戏启动前的完整性检查会将大量数据复制到系统磁盘，如果游戏在U盘上，这将耗费大量时间来完成此步骤。</li>\
+    <li>如果你需要保存账户信息到当前目录，请在“账户列表”中将账户转换为便携账户，否则在其他设备上需要重新登录。</li>\
 </ul>\
 <h2>高级用法</h2>\
 <h3>自定义 Java 路径（可使用相对路径）</h3>\
@@ -38,7 +39,7 @@ use64java=1\
 </textarea>\
 <p>默认参数：0</p>\
 <h3>自动备份/还原/删除配置</h3>\
-<p>注意：这里的运行时指的是 AuthLib-Injector（外置登录依赖）和 JavaFX（图形界面依赖），而全局配置指的是 config.json（用户许可）和 accounts.json（全局账户列表）。</p>\
+<p>注意：这里的运行时指的是 AuthLib-Injector（外置登录依赖）和 JavaFX（图形界面依赖），而全局配置指的是 config.json（用户许可）。</p>\
 <p>如果你想在硬盘上使用 HHML，那你肯定不想它自动备份/还原/删除运行时和全局配置。它们都位于系统用户目录下，既然都在硬盘上，又不用换电脑，还有必要备份吗？</p>\
 <p>所以我提供了一些有关备份/还原/删除的选项（它们的默认参数都是1）：</p>\
 <p><b>还原运行时</b><br>配置名：restoreRunTime<br>参数：</p>\
@@ -68,7 +69,7 @@ use64java=1\
 <p><b>备份全局配置</b><br>配置名：backupGlobalConfig<br>参数：</p>\
 <textarea>\
 0: 从不备份\n\
-1: 如果它们本来就存在则在 HMCL 关闭后弹窗让用户确认是否备份，否则自动备份\n\
+1: 如果它们原本不存在则自动备份\n\
 2: 总是备份（即使它们本来就存在）\
 </textarea>\
 <p><b>删除全局配置</b><br>配置名：removeGlobalConfig<br>参数：</p>\
@@ -111,4 +112,5 @@ use64java=1\
 <textarea>\
 verBlackList=1.8.0_272,17.0.1,11.0.2\
 </textarea>\
+<p>注意：位于屏蔽版本列表中的 Java 版本不会被用于启动 HMCL，也在 HMCL 的 Java 路径中不可见。但如果它安装在系统中，脚本依然能将其屏蔽，但在 HMCL 中可能会绕过屏蔽列表从而检测到它。</p>\
 "
