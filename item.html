@@ -183,7 +183,8 @@
             font-size:22px;
         }
         h4{
-            font-size:20px;
+            padding-top: 0px;
+            font-size:18px;
         }
         .imgTips{
             display:inline-block;
@@ -215,7 +216,7 @@
     </header>
     <nav style="transition-duration:0.3s;">
         <div id="navBox"></div>
-        <div id="toTop" onclick="autoScroll(0)">↑返回顶部</div>
+        <div id="toTop" onclick="autoScroll(0);hideNav()">↑返回顶部</div>
         <!--<img src="../java8/2disk.png"/>-->
     </nav>
     <main></main>
@@ -280,7 +281,7 @@
 		//启动页面滚动动画
 		autoScrollId = 0;
 		function autoScroll(scrollTo){
-			if(document.documentElement.scrollTop != scrollTo){
+			if(winScrTop() != scrollTo){
 				autoScrollId ++;
                 autoScrDist = 1;
                 autoScrTop = winScrTop();
@@ -389,7 +390,7 @@
                             document.getElementById("navBox").appendChild(linkBtn);
                         }
                         //设置索引按钮的目标位置
-                        document.getElementById("navBox").children[n].setAttribute("top", eleList[i].offsetTop - 0);
+                        document.getElementById("navBox").children[n].setAttribute("top", eleList[i].offsetTop);
                         n ++;
                     }
                 }
