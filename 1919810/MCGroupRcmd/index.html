@@ -60,7 +60,7 @@ function readyResize(){
         resizeSet = false;
         itemBox = document.getElementById("itemBox");
         blockItems = itemBox.getElementsByClassName("blockItems");
-        var itemJson = loadJS(srcFnt + "JsonList.js");
+        var itemJson = loadJS(srcFnt + "JsonList.js?" + Math.random());
         itemJson.onload = loadItemFromJson;
     } else {
         setTimeout(readyResize,100);

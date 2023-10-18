@@ -1,6 +1,6 @@
 itemLoadJsonList = [,
     {
-        "title":"基岩版原版生存<br>1.20.15.01",
+        "title":"基岩版生存养老<br>1.20.15.01",
         "titlestyle":"background:rgba(0,0,0,0.6);padding:5px;border-radius:5px",
         "cover":"itemDir/building.png",
         "path":"bedrock"
