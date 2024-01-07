@@ -1,0 +1,1 @@
+jeLoginLnk = "http://kr-nc-bgp-1.openfrp.top:55683/bungeewebauth/"
