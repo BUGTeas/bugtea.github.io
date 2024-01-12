@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-    <script src="./resources/libs/codemirror/codemirror.js"></script>
-    <link rel="stylesheet" href="./resources/libs/codemirror/codemirror.css">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <style>
+        html, body{
+            height: 100%;
+        }
         body{
             margin:0px;
             background-color:#eee;
@@ -91,21 +93,26 @@
             box-shadow: 0px 0px 5px #ccc;
         }
         main{
+            min-height: calc(100% - 178px);
             background-color: #fff;
             max-width: 1080px;
             margin-left: 0px;
             margin-top: 58px;
-            transform: translate(0px, 0px);;
+            transform: translate(0px, 0px);
             position: relative;
             width: calc(100% - 40px);
             padding: 20px;
             padding-bottom: 100px;
             word-break: break-word;
         }
-        main p, main ul{
+        main p, main ul, main ol{
             margin: 15px 0px;
             font-size: 18px;
             line-height: 28px;
+        }
+        main ul, main ol{
+            font-size: 17px;
+            line-height: 27px;
         }
         li{
             margin-bottom: 10px;
@@ -195,7 +202,7 @@
             line-height:0px;
             color:#f00;
         }
-        .CodeMirror{
+        pre, .CodeMirror{
             height:auto;
             background:#f5f5f5;
             border-radius: 10px;
@@ -204,7 +211,11 @@
             padding:10px;
             font-family: consolas, monospace, sans-serif;
         }
+        pre{
+            overflow:auto
+        }
     </style>
+</head>
 <body>
     <header style="width:calc(100% - 10px)">
         <div id="headBox">
@@ -219,7 +230,10 @@
         <div id="toTop" onclick="autoScroll(0);hideNav()">↑返回顶部</div>
         <!--<img src="../java8/2disk.png"/>-->
     </nav>
-    <main></main>
+    <main>
+        <p style="text-align:center">页面正在加载，请稍候...</p>
+    </main>
+    <a id="linka" target="_blank"></a>
     <div id="navBg" onclick="hideNav()"></div>
     <div style="display:none" id="navCloseAni">
         @keyframes navClose{
@@ -258,7 +272,8 @@
         }
     </div>
     <script type="text/javascript">
-        
+        errorVisible = false;
+        setTimeout(function(){errorVisible = true},1500)
         mainBox = document.body.children[2];
         headerTextBox = document.getElementById("headText");
         //headerBreakIndex = [];
@@ -286,8 +301,8 @@
                 autoScrDist = 1;
                 autoScrTop = winScrTop();
 				//console.log(String((document.documentElement.scrollTop - scrollTo) / 25).split(".")[0])
-				if(scrollTo + document.documentElement.clientHeight < document.body.clientHeight) autoScrTgt = scrollTo;
-				else autoScrTgt = document.body.clientHeight - document.documentElement.clientHeight
+				if(scrollTo + document.body.clientHeight < mainBox.clientHeight) autoScrTgt = scrollTo;
+				else autoScrTgt = mainBox.clientHeight - document.body.clientHeight
                 autoScrollProcess(autoScrollId);
 			}
 		}
@@ -353,7 +368,7 @@
         var subTitleIndex = [];
         var imgTipDftSize = [];
         function loadIndex(){
-            if(document.body.clientHeight != lastHeight){
+            if(mainBox.clientHeight != lastHeight){
                 //调整iframe嵌套缩放比为16:10
                 var iFrameList = mainBox.getElementsByTagName("iframe");
                 for (i = 0; i < iFrameList.length; i ++){
@@ -379,7 +394,6 @@
                 var eleList = mainBox.children;
                 var n = 0;
                 for (i = 0; i < eleList.length; i ++){
-
                     if (eleList[i].tagName == "H3"){
                         //当索引按钮不存在时添加一个
                         subTitleIndex[n] = eleList[i];
@@ -394,11 +408,10 @@
                         n ++;
                     }
                 }
-                lastHeight = document.body.clientHeight;
+                lastHeight = mainBox.clientHeight;
             }
             setTimeout(loadIndex,100);
         }
-        loadIndex();
         
         
         //窄宽度导航栏形态
@@ -433,15 +446,22 @@
         if(proFile){
             //获取文章脚本的所在路径
             var srcFnt = "";
-            if(proFile.substring(proFile.length - 3,proFile.length) !=  ".js" & proFile[proFile.length - 1] != "/") proFile +=  "/"
+            var targetFormat = proFile.substring(proFile.length - 3,proFile.length)
+            if(targetFormat !=  ".js" & targetFormat !=  ".md" & proFile[proFile.length - 1] != "/") {
+                proFile +=  "/";
+                targetFormat = ".js";
+            }
             var srcList = proFile.split("/");
             for (i = 0; i < srcList.length - 1; i ++){
                 srcFnt += srcList[i] + "/";
             }
-            var Scr = loadJS(proFile + "?" + Math.random());
+            if(targetFormat != ".md") var Scr = loadJS(proFile + "?" + Number.parseInt(Math.random() * 1000));
+            else var Scr = loadJS("https://cdn.bootcdn.net/ajax/libs/marked/9.0.0/marked.min.js");
+            invalidDataError = "<h1>错误</h1><p>文章源文件无效。</p>";
             notFoundError = "<h1>错误</h1><p>服务器异常或文章已被删除。</p>";
             Scr.onload = function(){
                 var checkInfo = function(){
+                    //if(targetFormat == ".md") loadInfo = marked.parse($.ajax({url:proFile,async:false}).responseText);
                     if(loadInfo){
                         mainBox.innerHTML = loadInfo;
                         //将./开头路径的图片设置为文章脚本的所在路径
@@ -449,6 +469,10 @@
                         for (i = 0; i < imgList.length; i ++){
                             if (imgList[i].getAttribute("src").substring(0, 2) == "./") {
                                 imgList[i].src = srcFnt + imgList[i].getAttribute("src");
+                            }
+                            imgList[i].onclick = function(){
+                                document.getElementById("linka").href = this.src;
+                                document.getElementById("linka").click();
                             }
                         }
                         //将内容为showLink的链接按钮内容改为其链接，并将./开头路径的链接设置为文章脚本的所在路径
@@ -461,20 +485,31 @@
                             if (linkList[i].getAttribute("href").substring(0, 8) == "itemDir/") {
                                 linkList[i].href = "item.html?proFile=" + srcFnt + linkList[i].getAttribute("href").substring(8,linkList[i].getAttribute("href").length);
                             }
+                            if (linkList[i].getAttribute("href").substring(0, 2) == "./") {
+                                linkList[i].href = "item.html?proFile=" + srcFnt + linkList[i].getAttribute("href");
+                            }
                         }
                         //将textarea转换为CodeMirror
-                        var txtAreaLst = [];
                         var textAreaList = mainBox.getElementsByTagName("textarea");
-                        for (i = 0; i < textAreaList.length; i ++){
-                            txtAreaLst[i] = textAreaList[i];
-                        }
-                        for (i = 0; i < txtAreaLst.length; i ++){
-                            txtAreaLst[i].style.width = "100%";
-                            if(txtAreaLst[i].innerHTML != "") txtAreaLst[i].value = txtAreaLst[i].innerHTML;
-                            var myCodeMirror = CodeMirror.fromTextArea(txtAreaLst[i], {
-                                lineNumbers: false, // 显示行号
-                                readOnly: true
-                            })
+                        if (textAreaList.length != 0) {
+                            var txtAreaLst = [];
+                            for (i = 0; i < textAreaList.length; i ++){
+                                txtAreaLst[i] = textAreaList[i];
+                            }
+                            var CodeMirCSS = document.createElement("link");
+                            CodeMirCSS.rel = "stylesheet";
+                            CodeMirCSS.href = "./resources/libs/codemirror/codemirror.css";
+                            document.head.insertBefore(CodeMirCSS,document.head.children[2]);
+                            var CodeMirLDR = loadJS("./resources/libs/codemirror/codemirror.js");
+                            CodeMirLDR.onload = function(){
+                                for (i = 0; i < txtAreaLst.length; i ++){
+                                    if(txtAreaLst[i].innerHTML != "") txtAreaLst[i].value = txtAreaLst[i].innerHTML;
+                                    var myCodeMirror = CodeMirror.fromTextArea(txtAreaLst[i], {
+                                        lineNumbers: false, // 显示行号
+                                        readOnly: true
+                                    })
+                                }
+                            }
                         }
                         //设置标题
                         pageLoaded = true;
@@ -499,17 +534,31 @@
                         headerEllipsis("none");
                         */
                         headerTextBox.innerHTML = headerText;
-                        
+                        //启动索引菜单
+                        loadIndex();
                     } else {
-                        if(mainBox.innerHTML != notFoundError) mainBox.innerHTML = notFoundError
+                        if(mainBox.innerHTML != invalidDataError & errorVisible) mainBox.innerHTML = invalidDataError;
                         setTimeout(function(){checkInfo()},0);
                     }
                 }
+                if(targetFormat == ".md") {              
+                    var xmlhttp;
+                    if (window.XMLHttpRequest) xmlhttp = new XMLHttpRequest();
+                    else loadInfo = "<h1>错误</h1><p>当前浏览器不被支持。</p>";
+                    xmlhttp.onreadystatechange = function() {
+                        if (xmlhttp.readyState == 4) {
+                            if(xmlhttp.status == 200) loadInfo = marked.parse(xmlhttp.responseText);
+                            else if(xmlhttp.status == 404) loadInfo = "<h1>错误</h1><p>未能在网站上找到此文章。(404)</p>";
+                            else loadInfo = "<h1>错误</h1><p>未知原因。(" + xmlhttp.status + ")</p>";
+                        }
+                    }
+                    xmlhttp.open("GET",proFile + "?" + Number.parseInt(Math.random() * 1000),true);
+                    xmlhttp.send();
+                }
                 checkInfo();
-                //else mainBox.innerHTML = "<h1>错误</h1><p>文章已被禁用。</p>";
             }
             Scr.onerror = function(){
-                mainBox.innerHTML = notFoundError
+                mainBox.innerHTML = notFoundError;
             }
         } else mainBox.innerHTML = "<h1>错误</h1><p>请检查链接是否正确。</p>";
 
