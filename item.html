@@ -314,8 +314,8 @@
         }
     </div>
     <script type="text/javascript">
-        errorVisible = false;
-        setTimeout(function(){errorVisible = true},1500)
+        //errorVisible = false;
+        //setTimeout(function(){errorVisible = true},1500)
         mainBox = document.body.children[2];
         headerTextBox = document.getElementById("headText");
         //headerBreakIndex = [];
@@ -410,6 +410,7 @@
         var winlastWidth = document.body.clientWidth;
         var pageLoaded = false;
         var scrolled = false;
+        var scrollReseted = false;
         var subTitleIndex = [];
         var imgTipDftSize = [];
         function loadIndex(){
@@ -423,7 +424,10 @@
             if(mainBox.clientHeight != lastHeight){
                 if(!sizeChanged){
                     if(lastFile == proFile) window.scroll(0,lastScroll);
-                    else window.scroll(0,0);
+                    else if(!scrollReseted) {
+                        window.scroll(0,0);
+                        scrollReseted = true;
+                    }
                     document.cookie = "lastScroll=" + winScrTop();
                 }
                 //调整iframe嵌套缩放比为16:10
@@ -512,6 +516,123 @@
         document.cookie = "lastFile=" + proFile;
 
 
+        //文件加载后
+        var loadMD = function(){
+            var xmlhttp;
+            if (window.XMLHttpRequest) xmlhttp = new XMLHttpRequest();
+            else loadInfo = "<h1>错误</h1><p>当前浏览器不被支持。</p>";
+            xmlhttp.onreadystatechange = function() {
+                if (xmlhttp.readyState == 4) {
+                    if(xmlhttp.status == 200) {
+                        loadInfo = marked.parse(xmlhttp.responseText);
+                    }
+                    else if(xmlhttp.status == 404) loadInfo = "<h1>错误</h1><p>未能在网站上找到此文章。(404)</p>";
+                    else loadInfo = "<h1>错误</h1><p>未知原因。(" + xmlhttp.status + ")</p>";
+                    loadContent();
+                }
+            }
+            xmlhttp.open("GET",proFile + "?" + Number.parseInt(Math.random() * 1000),true);
+            xmlhttp.send();
+        }
+        
+        //加载内容
+        var loadContent = function(){
+            if(loadInfo){
+                mainBox.innerHTML = loadInfo;
+                //将./开头路径的图片设置为文章脚本的所在路径
+                var imgList = mainBox.getElementsByTagName("img");
+                for (i = 0; i < imgList.length; i ++){
+                    if (imgList[i].getAttribute("src").substring(0, 2) == "./") {
+                        imgList[i].src = srcFnt + imgList[i].getAttribute("src").substring(2);
+                    }
+                    imgList[i].onclick = function(){
+                        document.getElementById("linka").href = this.src;
+                        document.getElementById("linka").click();
+                    }
+                }
+                var vidList = mainBox.getElementsByTagName("video");
+                for (i = 0; i < vidList.length; i ++){
+                    vidList[i].children[0].src = srcFnt + vidList[i].children[0].getAttribute("src").substring(2)
+                    //vidList[i].play();
+                    vidList[i].onclick = function(){
+                        document.getElementById("linka").href = this.children[0].src;
+                        document.getElementById("linka").click();
+                    }
+                }
+                //将内容为showLink的链接按钮内容改为其链接，并将./开头路径的链接设置为文章脚本的所在路径
+                var linkList = mainBox.getElementsByTagName("a");
+                for (i = 0; i < linkList.length; i ++){
+                    if (linkList[i].innerHTML == "showLink"){
+                        linkList[i].innerHTML = linkList[i].href;
+                        linkList[i].target = "_blank";
+                    }
+                    if (linkList[i].getAttribute("href").substring(0, 8) == "itemDir/") {
+                        linkList[i].href = "item.html?proFile=" + srcFnt + linkList[i].getAttribute("href").substring(8);
+                    }
+                    if (linkList[i].getAttribute("href").substring(0, 2) == "./") {
+                        linkList[i].href = "item.html?proFile=" + srcFnt + linkList[i].getAttribute("href").substring(2);
+                    }
+                }
+                //将textarea转换为CodeMirror
+                var textAreaList = mainBox.getElementsByTagName("textarea");
+                if (textAreaList.length != 0) {
+                    var txtAreaLst = [];
+                    for (i = 0; i < textAreaList.length; i ++){
+                        txtAreaLst[i] = textAreaList[i];
+                    }
+                    var CodeMirCSS = document.createElement("link");
+                    CodeMirCSS.rel = "stylesheet";
+                    CodeMirCSS.href = "./resources/libs/codemirror/codemirror.css";
+                    document.head.insertBefore(CodeMirCSS,document.head.children[2]);
+                    var CodeMirLDR = loadJS("./resources/libs/codemirror/codemirror.js");
+                    CodeMirLDR.onload = function(){
+                        for (i = 0; i < txtAreaLst.length; i ++){
+                            if(txtAreaLst[i].innerHTML != "") txtAreaLst[i].value = txtAreaLst[i].innerHTML;
+                            var myCodeMirror = CodeMirror.fromTextArea(txtAreaLst[i], {
+                                lineNumbers: false, // 显示行号
+                                readOnly: true
+                            })
+                        }
+                    }
+                }
+                //设置标题
+                pageLoaded = true;
+                headerText = mainBox.getElementsByTagName("h1")[0].innerHTML;
+                document.title = headerText;
+                //获取省略号启用条件（已弃用）
+                /*
+                //宽度根据文本宽度自适应
+                document.body.children[0].style.width = "auto";
+                //获取省略号宽度
+                headerTextBox.innerHTML = headerEllipsisText
+                ellipsisWidth = headerTextBox.clientWidth
+                headerTextBox.innerHTML = ""
+                //每增加一个字符获取一次文本加上省略号的宽度
+                for (i = 0; i < headerText.length; i ++){
+                    headerTextBox.innerHTML += headerText[i];
+                    headerBreakIndex[i] = headerTextBox.clientWidth + ellipsisWidth
+                }
+                //恢复原宽度
+                document.body.children[0].style.width = "calc(100% - 10px)"
+                //检测并在条件满足时启用省略号
+                headerEllipsis("none");
+                */
+                headerTextBox.innerHTML = headerText;
+                //启动索引菜单
+                loadIndex();
+
+                //页面集成JS代码
+                if (mainBox.children[mainBox.children.length - 1].innerHTML[0] == "/") {
+                    eval(mainBox.children[mainBox.children.length - 1].innerHTML.substring(1));
+                    mainBox.children[mainBox.children.length - 1].remove();
+                }
+            } else {
+                mainBox.innerHTML = "<h1>错误</h1><p>文章源文件无效。</p>";
+                //if(mainBox.innerHTML != invalidDataError & errorVisible) mainBox.innerHTML = invalidDataError;
+                //setTimeout(function(){loadContent()},0);
+            }
+        }
+
         if(proFile){
             //获取文章脚本的所在路径
             var srcFnt = "";
@@ -524,128 +645,30 @@
             for (i = 0; i < srcList.length - 1; i ++){
                 srcFnt += srcList[i] + "/";
             }
-            if(targetFormat != ".md") var Scr = loadJS(proFile + "?" + Number.parseInt(Math.random() * 1000));
-            else var Scr = loadJS("https://cdn.bootcdn.net/ajax/libs/marked/9.0.0/marked.min.js");
-            invalidDataError = "<h1>错误</h1><p>文章源文件无效。</p>";
-            notFoundError = "<h1>错误</h1><p>服务器异常或文章已被删除。</p>";
-            Scr.onload = function(){
-                var checkInfo = function(){
-                    //if(targetFormat == ".md") loadInfo = marked.parse($.ajax({url:proFile,async:false}).responseText);
-                    if(loadInfo){
-                        mainBox.innerHTML = loadInfo;
-                        //将./开头路径的图片设置为文章脚本的所在路径
-                        var imgList = mainBox.getElementsByTagName("img");
-                        for (i = 0; i < imgList.length; i ++){
-                            if (imgList[i].getAttribute("src").substring(0, 2) == "./") {
-                                imgList[i].src = srcFnt + imgList[i].getAttribute("src").substring(2);
-                            }
-                            imgList[i].onclick = function(){
-                                document.getElementById("linka").href = this.src;
-                                document.getElementById("linka").click();
-                            }
-                        }
-                        var vidList = mainBox.getElementsByTagName("video");
-                        for (i = 0; i < vidList.length; i ++){
-                            vidList[i].children[0].src = srcFnt + vidList[i].children[0].getAttribute("src").substring(2)
-                            //vidList[i].play();
-                            vidList[i].onclick = function(){
-                                document.getElementById("linka").href = this.children[0].src;
-                                document.getElementById("linka").click();
-                            }
-                        }
-                        //将内容为showLink的链接按钮内容改为其链接，并将./开头路径的链接设置为文章脚本的所在路径
-                        var linkList = mainBox.getElementsByTagName("a");
-                        for (i = 0; i < linkList.length; i ++){
-                            if (linkList[i].innerHTML == "showLink"){
-                                linkList[i].innerHTML = linkList[i].href;
-                                linkList[i].target = "_blank";
-                            }
-                            if (linkList[i].getAttribute("href").substring(0, 8) == "itemDir/") {
-                                linkList[i].href = "item.html?proFile=" + srcFnt + linkList[i].getAttribute("href").substring(8);
-                            }
-                            if (linkList[i].getAttribute("href").substring(0, 2) == "./") {
-                                linkList[i].href = "item.html?proFile=" + srcFnt + linkList[i].getAttribute("href").substring(2);
-                            }
-                        }
-                        //将textarea转换为CodeMirror
-                        var textAreaList = mainBox.getElementsByTagName("textarea");
-                        if (textAreaList.length != 0) {
-                            var txtAreaLst = [];
-                            for (i = 0; i < textAreaList.length; i ++){
-                                txtAreaLst[i] = textAreaList[i];
-                            }
-                            var CodeMirCSS = document.createElement("link");
-                            CodeMirCSS.rel = "stylesheet";
-                            CodeMirCSS.href = "./resources/libs/codemirror/codemirror.css";
-                            document.head.insertBefore(CodeMirCSS,document.head.children[2]);
-                            var CodeMirLDR = loadJS("./resources/libs/codemirror/codemirror.js");
-                            CodeMirLDR.onload = function(){
-                                for (i = 0; i < txtAreaLst.length; i ++){
-                                    if(txtAreaLst[i].innerHTML != "") txtAreaLst[i].value = txtAreaLst[i].innerHTML;
-                                    var myCodeMirror = CodeMirror.fromTextArea(txtAreaLst[i], {
-                                        lineNumbers: false, // 显示行号
-                                        readOnly: true
-                                    })
-                                }
-                            }
-                        }
-                        //设置标题
-                        pageLoaded = true;
-                        headerText = mainBox.getElementsByTagName("h1")[0].innerHTML;
-                        document.title = headerText;
-                        //获取省略号启用条件（已弃用）
-                        /*
-                        //宽度根据文本宽度自适应
-                        document.body.children[0].style.width = "auto";
-                        //获取省略号宽度
-                        headerTextBox.innerHTML = headerEllipsisText
-                        ellipsisWidth = headerTextBox.clientWidth
-                        headerTextBox.innerHTML = ""
-                        //每增加一个字符获取一次文本加上省略号的宽度
-                        for (i = 0; i < headerText.length; i ++){
-                            headerTextBox.innerHTML += headerText[i];
-                            headerBreakIndex[i] = headerTextBox.clientWidth + ellipsisWidth
-                        }
-                        //恢复原宽度
-                        document.body.children[0].style.width = "calc(100% - 10px)"
-                        //检测并在条件满足时启用省略号
-                        headerEllipsis("none");
-                        */
-                        headerTextBox.innerHTML = headerText;
-                        //启动索引菜单
-                        loadIndex();
-
-                        //页面集成JS代码
-                        if (mainBox.children[mainBox.children.length - 1].innerHTML[0] == "/") {
-                            eval(mainBox.children[mainBox.children.length - 1].innerHTML.split("/")[1]);
-                            mainBox.children[mainBox.children.length - 1].remove();
-                        }
-                    } else {
-                        if(mainBox.innerHTML != invalidDataError & errorVisible) mainBox.innerHTML = invalidDataError;
-                        setTimeout(function(){checkInfo()},0);
-                    }
+            //invalidDataError = "<h1>错误</h1><p>文章源文件无效。</p>";
+            if(targetFormat != ".md") {
+                //js格式
+                var Source = loadJS(proFile + "?" + Number.parseInt(Math.random() * 1000));
+                Source.onload = loadContent;
+                Source.onerror = function(){
+                    mainBox.innerHTML = "<h1>错误</h1><p>服务器异常或文章已被删除。</p>";
                 }
-                if(targetFormat == ".md") {              
-                    var xmlhttp;
-                    if (window.XMLHttpRequest) xmlhttp = new XMLHttpRequest();
-                    else loadInfo = "<h1>错误</h1><p>当前浏览器不被支持。</p>";
-                    xmlhttp.onreadystatechange = function() {
-                        if (xmlhttp.readyState == 4) {
-                            if(xmlhttp.status == 200) loadInfo = marked.parse(xmlhttp.responseText);
-                            else if(xmlhttp.status == 404) loadInfo = "<h1>错误</h1><p>未能在网站上找到此文章。(404)</p>";
-                            else loadInfo = "<h1>错误</h1><p>未知原因。(" + xmlhttp.status + ")</p>";
-                        }
-                    }
-                    xmlhttp.open("GET",proFile + "?" + Number.parseInt(Math.random() * 1000),true);
-                    xmlhttp.send();
-                }
-                checkInfo();
             }
-            Scr.onerror = function(){
-                mainBox.innerHTML = notFoundError;
+            else {
+                //md格式
+                var depend = loadJS("https://cdn.jsdelivr.net/npm/marked/marked.min.js");
+                var markedIndex = 0;
+                depend.onload = loadMD;
+                depend.onerror = function(){
+                    var depend = loadJS("https://cdn.bootcdn.net/ajax/libs/marked/9.0.0/marked.min.js");
+                    depend.onload = loadContent;
+                    depend.onerror = function(){
+                        mainBox.innerHTML = "<h1>错误</h1><p>页面组件加载异常，请检查网络。</p>";
+                    }
+                    markedIndex ++
+                }
             }
         } else mainBox.innerHTML = "<h1>错误</h1><p>请检查链接是否正确。</p>";
-
 
         //检测并在条件满足时启用省略号（已弃用）
         /*function headerEllipsis(cnt){
