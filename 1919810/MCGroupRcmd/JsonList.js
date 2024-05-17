@@ -1,6 +1,6 @@
 itemLoadJsonList = [,
     {
-        "title":"焦外净土 BDS<br>基岩版生存养老（基友）<br>1.20.62",
+        "title":"新纯境<br>基岩版纯净生存（BDS 核心）<br>1.20.81",
         "titlestyle":"background:rgba(0,0,0,0.6);padding:5px;border-radius:5px",
         "cover":"itemDir/building.png",
         "path":"bedrock"
@@ -11,7 +11,7 @@ itemLoadJsonList = [,
         "path":"isekai"
     },
     {
-        "title":"支持基岩版！(公共服)<br>幻域无界 ——<br>史上最大东方玄幻RPG地图<br>盘灵古域 高版本互通服务器",
+        "title":"(公共服) 梦回盘灵<br>盘灵古域高版本扩展<br>但是支持基岩版！",
         "cover":"itemDir/emperorCity.jpg",
         "path":"pangcont"
     }
